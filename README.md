@@ -1,5 +1,5 @@
 # Said Rashid Design Platform v3
-## منصة تصميم AI كاملة — مثل dzine.ai
+## منصة تصميم AI كاملة 
 
 ## هيكل المشروع
 ```
