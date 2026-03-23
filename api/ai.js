@@ -1,6 +1,6 @@
 export const config = { runtime: 'edge' };
 
-const CORS = {
+const H = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
@@ -8,190 +8,147 @@ const CORS = {
 };
 
 export default async function handler(req) {
-  if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
-  if (req.method !== 'POST') return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: CORS });
+  if (req.method === 'OPTIONS') return new Response(null, { headers: H });
+  if (req.method !== 'POST') return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: H });
 
-  const FAL_KEY = process.env.FAL_API_KEY;
-  const GEMINI_KEY = process.env.GEMINI_API_KEY;
+  const GEMINI = process.env.GEMINI_API_KEY;
+  const FAL = process.env.FAL_API_KEY;
 
-  const body = await req.json();
-  const { tool, prompt, imageUrl, imageBase64, operationName } = body;
+  const debug = {
+    gemini: GEMINI ? GEMINI.substring(0, 8) + '...' : 'MISSING',
+    fal: FAL ? FAL.substring(0, 8) + '...' : 'MISSING'
+  };
+
+  let body;
+  try { body = await req.json(); }
+  catch (e) { return new Response(JSON.stringify({ error: 'Invalid JSON', debug }), { status: 400, headers: H }); }
+
+  const { tool, prompt, imageBase64, imageUrl, operationName } = body;
 
   try {
 
-    // ── ENHANCE PROMPT (Gemini) ──────────────────────────────
+    if (tool === 'test') {
+      return new Response(JSON.stringify({ success: true, debug, message: 'API working!' }), { headers: H });
+    }
+
     if (tool === 'enhance-prompt') {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{
-              parts: [{ text: `You are a professional AI art prompt engineer. Enhance this prompt to be more detailed, vivid and artistic for image generation. Return ONLY the enhanced prompt in English, nothing else. Original: "${prompt}"` }]
-            }]
-          })
-        }
-      );
-      const data = await res.json();
-      const enhanced = data.candidates?.[0]?.content?.parts?.[0]?.text || prompt;
-      return new Response(JSON.stringify({ success: true, enhanced }), { headers: CORS });
+      if (!GEMINI) return new Response(JSON.stringify({ error: 'GEMINI_API_KEY missing', debug }), { headers: H });
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: `Enhance this image prompt, return ONLY the result in English: "${prompt}"` }] }] })
+      });
+      const d = await r.json();
+      return new Response(JSON.stringify({ success: true, enhanced: d.candidates?.[0]?.content?.parts?.[0]?.text || prompt }), { headers: H });
     }
 
-    // ── IMAGEN 3 (Google) ────────────────────────────────────
     if (tool === 'imagen3') {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            instances: [{ prompt }],
-            parameters: {
-              sampleCount: 1,
-              aspectRatio: body.ar || '1:1',
-              personGeneration: 'allow_adult'
-            }
-          })
-        }
-      );
-      const data = await res.json();
-      if (data.predictions?.[0]?.bytesBase64Encoded) {
-        return new Response(JSON.stringify({
-          success: true, type: 'base64',
-          data: data.predictions[0].bytesBase64Encoded,
-          mimeType: 'image/png'
-        }), { headers: CORS });
+      if (!GEMINI) return new Response(JSON.stringify({ error: 'GEMINI_API_KEY missing', debug }), { headers: H });
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ instances: [{ prompt }], parameters: { sampleCount: 1, aspectRatio: '1:1', personGeneration: 'allow_adult' } })
+      });
+      const d = await r.json();
+      if (d.predictions?.[0]?.bytesBase64Encoded) {
+        return new Response(JSON.stringify({ success: true, type: 'base64', data: d.predictions[0].bytesBase64Encoded, mimeType: 'image/png' }), { headers: H });
       }
-      throw new Error(data.error?.message || 'Imagen3 failed');
+      return new Response(JSON.stringify({ error: 'Imagen3 failed', details: d, debug }), { status: 400, headers: H });
     }
 
-    // ── VEO 3 START (Google) ─────────────────────────────────
     if (tool === 'veo3') {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-preview:predictLongRunning?key=${GEMINI_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            instances: [{ prompt }],
-            parameters: { aspectRatio: '16:9', sampleCount: 1, durationSeconds: 8 }
-          })
-        }
-      );
-      const data = await res.json();
-      if (data.name) {
-        return new Response(JSON.stringify({
-          success: true, type: 'veo3_pending', operationName: data.name
-        }), { headers: CORS });
-      }
-      throw new Error('Veo3 failed to start');
+      if (!GEMINI) return new Response(JSON.stringify({ error: 'GEMINI_API_KEY missing', debug }), { headers: H });
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-preview:predictLongRunning?key=${GEMINI}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ instances: [{ prompt }], parameters: { aspectRatio: '16:9', sampleCount: 1, durationSeconds: 8 } })
+      });
+      const d = await r.json();
+      if (d.name) return new Response(JSON.stringify({ success: true, type: 'veo3_pending', operationName: d.name }), { headers: H });
+      return new Response(JSON.stringify({ error: 'Veo3 failed', details: d, debug }), { status: 400, headers: H });
     }
 
-    // ── VEO 3 STATUS ─────────────────────────────────────────
     if (tool === 'veo3-status') {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/${operationName}?key=${GEMINI_KEY}`
-      );
-      const data = await res.json();
-      if (data.done && data.response?.predictions?.[0]?.bytesBase64Encoded) {
-        return new Response(JSON.stringify({
-          success: true, done: true, type: 'base64',
-          data: data.response.predictions[0].bytesBase64Encoded,
-          mimeType: 'video/mp4'
-        }), { headers: CORS });
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/${operationName}?key=${GEMINI}`);
+      const d = await r.json();
+      if (d.done && d.response?.predictions?.[0]?.bytesBase64Encoded) {
+        return new Response(JSON.stringify({ success: true, done: true, type: 'base64', data: d.response.predictions[0].bytesBase64Encoded, mimeType: 'video/mp4' }), { headers: H });
       }
-      return new Response(JSON.stringify({ success: true, done: false }), { headers: CORS });
+      return new Response(JSON.stringify({ success: true, done: false }), { headers: H });
     }
 
-    // ── FAL.AI TOOLS ─────────────────────────────────────────
-    if (!FAL_KEY) {
-      return new Response(JSON.stringify({ error: 'FAL_API_KEY not configured' }), { status: 500, headers: CORS });
+    if (tool === 'check-status') {
+      if (!FAL) return new Response(JSON.stringify({ error: 'FAL_API_KEY missing', debug }), { headers: H });
+      const { id, modelId } = body;
+      const r = await fetch(`https://queue.fal.run/${modelId}/requests/${id}`, {
+        headers: { 'Authorization': 'Key ' + FAL }
+      });
+      const d = await r.json();
+      if (d.status === 'COMPLETED') {
+        const imgUrl = d.output?.images?.[0]?.url || d.output?.image?.url;
+        return new Response(JSON.stringify({ success: true, status: 'succeeded', output: [imgUrl] }), { headers: H });
+      }
+      return new Response(JSON.stringify({ success: true, status: 'processing' }), { headers: H });
     }
 
-    // Map tools to fal.ai models
-    const FAL_MODELS = {
-      'text-to-image':      'fal-ai/flux/schnell',
-      'text-to-image-pro':  'fal-ai/flux-pro/v1.1',
-      'image-to-image':     'fal-ai/flux/dev/image-to-image',
-      'remove-background':  'fal-ai/birefnet',
-      'enhance-photo':      'fal-ai/clarity-upscaler',
-      'upscale':            'fal-ai/esrgan',
-      'face-swap':          'fal-ai/face-swap',
-      'sketch-to-art':      'fal-ai/controlnet-union/canny',
-      'text-to-video':      'fal-ai/minimax-video/image-to-video',
-      'image-to-video':     'fal-ai/minimax-video/image-to-video',
-      'chat-editor':        'fal-ai/flux/dev/image-to-image',
+    // FAL tools
+    if (!FAL) return new Response(JSON.stringify({ error: 'FAL_API_KEY missing', debug }), { status: 500, headers: H });
+
+    const models = {
+      'text-to-image':     'fal-ai/flux/schnell',
+      'image-to-image':    'fal-ai/flux/dev/image-to-image',
+      'remove-background': 'fal-ai/birefnet',
+      'enhance-photo':     'fal-ai/clarity-upscaler',
+      'upscale':           'fal-ai/esrgan',
+      'face-swap':         'fal-ai/face-swap',
+      'text-to-video':     'fal-ai/minimax/video-01',
+      'image-to-video':    'fal-ai/minimax/video-01-live',
+      'chat-editor':       'fal-ai/flux/dev/image-to-image',
+      'sketch-to-art':     'fal-ai/flux/dev/image-to-image',
     };
 
-    const modelId = FAL_MODELS[tool] || FAL_MODELS['text-to-image'];
-
-    // Build input
+    const modelId = models[tool] || 'fal-ai/flux/schnell';
     let input = {};
-    if (tool === 'text-to-image' || tool === 'text-to-image-pro') {
-      input = { prompt, image_size: 'square_hd', num_images: 1, enable_safety_checker: false };
+
+    if (tool === 'text-to-image') {
+      input = { prompt, image_size: 'square_hd', num_images: 1 };
     } else if (tool === 'remove-background') {
-      input = { image_url: imageUrl || `data:image/jpeg;base64,${imageBase64}` };
+      input = { image_url: imageUrl || ('data:image/jpeg;base64,' + imageBase64) };
     } else if (tool === 'enhance-photo' || tool === 'upscale') {
-      input = { image_url: imageUrl || `data:image/jpeg;base64,${imageBase64}`, scale: 2 };
-    } else if (tool === 'face-swap') {
-      input = {
-        base_image_url: imageUrl || `data:image/jpeg;base64,${imageBase64}`,
-        swap_image_url: body.sourceImageUrl || imageUrl || `data:image/jpeg;base64,${imageBase64}`
-      };
+      input = { image_url: imageUrl || ('data:image/jpeg;base64,' + imageBase64) };
     } else if (tool === 'text-to-video') {
-      input = { prompt, num_frames: 150 };
+      input = { prompt };
     } else if (tool === 'image-to-video') {
-      input = {
-        prompt: prompt || 'smooth cinematic motion',
-        image_url: imageUrl || `data:image/jpeg;base64,${imageBase64}`
-      };
+      input = { prompt: prompt || 'smooth motion', image_url: imageUrl || ('data:image/jpeg;base64,' + imageBase64) };
     } else if (imageBase64 || imageUrl) {
-      input = {
-        prompt,
-        image_url: imageUrl || `data:image/jpeg;base64,${imageBase64}`,
-        strength: 0.75
-      };
+      input = { prompt, image_url: imageUrl || ('data:image/jpeg;base64,' + imageBase64), strength: 0.75 };
     } else {
       input = { prompt, image_size: 'square_hd', num_images: 1 };
     }
 
-    // Submit to fal.ai
-    const submitRes = await fetch(`https://queue.fal.run/${modelId}`, {
+    const falRes = await fetch(`https://fal.run/${modelId}`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Key ${FAL_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ input })
+      headers: { 'Authorization': 'Key ' + FAL, 'Content-Type': 'application/json' },
+      body: JSON.stringify(input)
     });
 
-    const submitData = await submitRes.json();
+    const falText = await falRes.text();
+    let falData;
+    try { falData = JSON.parse(falText); } catch(e) { falData = { raw: falText }; }
 
-    if (submitData.error) throw new Error(submitData.error);
-
-    // If result is immediate
-    if (submitData.images?.[0]?.url || submitData.image?.url) {
-      const url = submitData.images?.[0]?.url || submitData.image?.url;
-      return new Response(JSON.stringify({
-        success: true, status: 'succeeded',
-        output: [url]
-      }), { headers: CORS });
+    if (!falRes.ok) {
+      return new Response(JSON.stringify({ error: 'fal.ai error ' + falRes.status, details: falData, debug }), { status: 400, headers: H });
     }
 
-    // If queued - return request_id for polling
-    if (submitData.request_id) {
-      return new Response(JSON.stringify({
-        success: true,
-        status: 'processing',
-        id: submitData.request_id,
-        modelId
-      }), { headers: CORS });
+    const imgOut = falData?.images?.[0]?.url || falData?.image?.url;
+    if (imgOut) {
+      return new Response(JSON.stringify({ success: true, status: 'succeeded', output: [imgOut] }), { headers: H });
     }
 
-    return new Response(JSON.stringify({ error: 'Unknown response from fal.ai', details: submitData }), { status: 400, headers: CORS });
+    if (falData?.request_id) {
+      return new Response(JSON.stringify({ success: true, status: 'processing', id: falData.request_id, modelId }), { headers: H });
+    }
+
+    return new Response(JSON.stringify({ error: 'No output from fal.ai', details: falData, debug }), { status: 400, headers: H });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: CORS });
+    return new Response(JSON.stringify({ error: err.message, debug }), { status: 500, headers: H });
   }
 }
