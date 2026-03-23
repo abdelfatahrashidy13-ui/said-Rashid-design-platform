@@ -51,4 +51,177 @@
         /* Result Box */
         .res-box { display: none; margin-top: 15px; text-align: center; }
         .res-box.show { display: block; }
-        .res-img { max-width:
+        .res-img { max-width: 100%; border-radius: 12px; border: 2px solid var(--border); max-height: 300px; }
+        
+        /* Plans & Payment */
+        .pc { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 20px; margin-bottom: 15px; text-align: center; }
+        .am { font-size: 30px; font-weight: 900; color: var(--gold); }
+        .pb { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; margin-top: 10px; }
+        .pbg { background: var(--grad); color: #000; }
+
+        /* Toast & Spinner */
+        .toast { position: fixed; bottom: 130px; left: 50%; transform: translateX(-50%); background: var(--gold); color: #000; padding: 10px 20px; border-radius: 8px; font-weight: 700; display: none; z-index: 1000; }
+        .spin { width: 20px; height: 20px; border: 3px solid rgba(0,0,0,0.1); border-top-color: #000; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 600px) { .stbar { right: 0; } .main { margin-right: 0; } .sb { display: none; } }
+    </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<aside class="sb">
+    <div class="sb-logo" onclick="showPage('home')">SR</div>
+    <div class="sb-ic on" data-page="home">🏠</div>
+    <div class="sb-ic" data-page="tools">🛠️</div>
+    <div class="sb-ic" data-page="plans">👑</div>
+    <div class="sb-ic" data-page="payment">💰</div>
+</aside>
+
+<main class="main">
+    <header class="hdr">
+        <div class="hdr-brand"><div class="dot"></div>Said Rashid AI V3</div>
+        <button class="btn-free" onclick="showPage('plans')">ابدأ مجاناً</button>
+    </header>
+
+    <div class="content">
+        <div class="page on" id="page-home">
+            <h1 style="font-size: 24px; margin-bottom: 10px;">أهلاً بك في <span style="color:var(--gold)">استوديو سعيد رشيدي</span></h1>
+            <p style="color:var(--txt2); font-size: 14px;">أقوى منصة لتوليد الصور والذكاء الاصطناعي</p>
+            <div class="dz-grid">
+                <div class="dz-card" onclick="selectTool('imagen-3', 'توليد الصور')">
+                    <span class="dc-ic">🎨</span>
+                    <span class="dc-nm">Imagen 3 (صور)</span>
+                </div>
+                <div class="dz-card" onclick="selectTool('veo-3', 'توليد فيديو')">
+                    <span class="dc-ic">🎬</span>
+                    <span class="dc-nm">Veo 3 (فيديو)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-plans">
+            <h2 style="text-align:center; margin-bottom:20px;">اختر باقتك 🚀</h2>
+            <div class="pc">
+                <h3>باقة المحترفين (Pro)</h3>
+                <div class="am">249 <span style="font-size:14px">جنيه / شهر</span></div>
+                <ul style="list-style:none; margin:15px 0; font-size:13px; color:var(--txt2)">
+                    <li>✅ صور غير محدودة</li>
+                    <li>✅ دعم Imagen 3</li>
+                    <li>✅ تفعيل فوري على الواتساب</li>
+                </ul>
+                <button class="pb pbg" onclick="contactWa('Pro', '249 جنيه')">اشترك الآن</button>
+            </div>
+        </div>
+
+        <div class="page" id="page-payment">
+            <h2 style="text-align:center; margin-bottom:20px;">طرق الدفع 💰</h2>
+            <div class="pc">
+                <p style="font-size:14px; margin-bottom:10px;">فودافون كاش:</p>
+                <div style="background:#000; padding:15px; border-radius:10px; font-weight:900; font-size:18px; letter-spacing:1px; color:var(--gold)">
+                    01122977222
+                </div>
+                <p style="font-size:12px; color:var(--txt2); margin-top:10px;">بعد التحويل، ابعت الإيصال على الواتساب</p>
+                <button class="pb pbg" onclick="window.open('https://wa.me/201122977222')">تواصل واتساب</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="stbar" id="stbar">
+        <div style="font-size:11px; color:var(--gold)" id="toolNm">الأداة: اختر أداة أولاً</div>
+        <div class="stbar-top">
+            <input class="st-inp" id="mainP" type="text" placeholder="اكتب وصف التصميم هنا...">
+            <button class="btn-run" id="runBtn" onclick="runTool()">
+                <span id="runTxt">ولّد ✨</span>
+                <div class="spin" id="runSpin"></div>
+            </button>
+        </div>
+        <div class="res-box" id="resBox">
+            <img id="resImg" class="res-img" src="">
+            <div style="margin-top:10px;">
+                <a id="dlBtn" style="color:var(--gold); font-size:13px; text-decoration:none; font-weight:bold;" download="said-rashid.png">⬇️ تحميل الصورة</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    let curTool = '';
+
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+        document.getElementById('page-' + id).classList.add('on');
+        document.querySelectorAll('.sb-ic').forEach(i => i.classList.remove('on'));
+        const activeIc = document.querySelector(`[data-page="${id}"]`);
+        if(activeIc) activeIc.classList.add('on');
+        window.scrollTo(0,0);
+    }
+
+    function selectTool(id, name) {
+        curTool = id;
+        document.getElementById('toolNm').textContent = 'الأداة: ' + name;
+        document.getElementById('mainP').focus();
+        toast("تم اختيار: " + name);
+    }
+
+    async function runTool() {
+        const prompt = document.getElementById('mainP').value.trim();
+        if (!curTool) { toast("اختر أداة أولاً يا عميد!"); return; }
+        if (!prompt) { toast("اكتب وصفاً للتصميم!"); return; }
+
+        // تشغيل التحميل
+        setLoading(true);
+        document.getElementById('resBox').classList.remove('show');
+
+        try {
+            const response = await fetch('/api/ai', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tool: curTool, prompt: prompt })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const img = document.getElementById('resImg');
+                img.src = "data:image/png;base64," + data.data;
+                document.getElementById('resBox').classList.add('show');
+                document.getElementById('dlBtn').href = img.src;
+                toast("🚀 تم التوليد بنجاح!");
+            } else {
+                alert("خطأ: " + (data.error || "فشل التوليد"));
+            }
+        } catch (e) {
+            alert("فشل الاتصال بالسيرفر");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    function setLoading(v) {
+        document.getElementById('runBtn').disabled = v;
+        document.getElementById('runTxt').style.display = v ? 'none' : 'inline';
+        document.getElementById('runSpin').style.display = v ? 'inline-block' : 'none';
+    }
+
+    function toast(m) {
+        const t = document.getElementById('toast');
+        t.textContent = m;
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3000);
+    }
+
+    function contactWa(plan, price) {
+        const msg = encodeURIComponent(`مرحباً يا سعيد، أريد الاشتراك في باقة: ${plan}\nالسعر: ${price}\nبريدي الإلكتروني: `);
+        window.open(`https://wa.me/201122977222?text=${msg}`, '_blank');
+    }
+
+    // التنقل بين الروابط في السايدبار
+    document.querySelectorAll('.sb-ic').forEach(icon => {
+        icon.addEventListener('click', () => showPage(icon.dataset.page));
+    });
+</script>
+
+</body>
+</html>
