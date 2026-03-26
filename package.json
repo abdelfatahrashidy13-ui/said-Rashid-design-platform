@@ -1,10 +1,1 @@
-{
-  "name": "said-rashid-ai-platform",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.49.1",
-    "google-auth-library": "^9.14.1"
-  }
-}
+{"name":"said-rashid-design-platform","version":"1.0.0","private":true,"type":"module"}
