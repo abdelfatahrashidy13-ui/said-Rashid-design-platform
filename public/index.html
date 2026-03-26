@@ -1,9 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
-  <title>AI Project</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Said Rashid AI</title>
+  <style>
+    :root{--bg:#0b0b0f;--card:#18181f;--card2:#20202a;--border:#2f2f3b;--gold:#f5c842;--txt:#fff;--muted:#aaa}
+    *{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--txt)}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    .hero,.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:18px}
+    .top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px}
+    .brand{font-weight:800;font-size:22px}.gold{color:var(--gold)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{padding:12px 16px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--txt);cursor:pointer;font-weight:700}
+    .btn.primary{background:linear-gradient(135deg,#f5c842,#e8a020);color:#000;border:none}
+    h1{font-size:clamp(28px,6vw,52px);line-height:1.15;margin:0 0 12px}
+    p{color:var(--muted);line-height:1.8}
+    .hero-grid,.use-grid,.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .metric,.use,.plan{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px}
+    .metric strong{display:block;color:var(--gold);font-size:20px;margin-bottom:6px}
+    .demo{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:18px;margin-top:18px}
+    .demo .prompt{background:#121218;padding:12px;border-radius:10px;font-size:14px;margin-bottom:10px}
+    .section-title{font-size:22px;font-weight:800;margin-bottom:12px}
+    .use h3,.plan h3{margin-top:0}
+    .plan.pop{border-color:var(--gold)}
+    .pill{display:inline-block;background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.25);color:var(--gold);padding:7px 12px;border-radius:999px;font-size:12px;font-weight:800;margin-bottom:12px}
+    footer{padding:30px 10px;text-align:center;color:var(--muted)}
+    @media(max-width:800px){.hero-grid,.use-grid,.plans{grid-template-columns:1fr}.top{flex-direction:column;align-items:flex-start}}
+  </style>
 </head>
 <body>
-  <h1>🔥 AI Project Running</h1>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">Said Rashid <span class="gold">AI</span></div>
+      <div class="actions">
+        <button class="btn" id="loginBtn">تسجيل الدخول</button>
+        <button class="btn primary" id="startBtn">ابدأ مجانًا</button>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="pill">🔥 اصنع محتوى AI جاهز للنشر خلال دقائق</div>
+      <h1>أنشئ فيديوهات وصور <span class="gold">AI</span> جاهزة لـ TikTok و Reels والإعلانات</h1>
+      <p>منصة واحدة تساعدك على إنشاء فيديوهات وصور احترافية بسرعة، بدون خبرة وبدون برامج معقدة.</p>
+      <div class="actions">
+        <button class="btn primary" onclick="location.href='/login'">🚀 ابدأ مجانًا الآن</button>
+        <button class="btn" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">💎 شاهد الباقات</button>
+      </div>
+
+      <div class="hero-grid" style="margin-top:18px">
+        <div class="metric"><strong>+2,300</strong><span>تصميم تم إنشاؤه</span></div>
+        <div class="metric"><strong>أقل من 2 دقيقة</strong><span>متوسط وقت الإنشاء</span></div>
+        <div class="metric"><strong>TikTok Ready</strong><span>محتوى جاهز للنشر</span></div>
+      </div>
+
+      <div class="demo">
+        <div class="prompt">Luxury perfume ad, cinematic lighting, black background, gold reflections</div>
+        <div>🎬 فيديو إعلان احترافي خلال دقائق</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">🎯 لماذا سيستخدم الناس منصتك؟</div>
+      <div class="use-grid">
+        <div class="use"><h3>📱 محتوى TikTok و Reels</h3><p>حوّل أي فكرة إلى فيديو قصير جذاب وجاهز للنشر.</p></div>
+        <div class="use"><h3>🛍️ إعلانات المنتجات</h3><p>أنشئ صور وفيديوهات منتجات احترافية بسرعة.</p></div>
+        <div class="use"><h3>⚡ سرعة وتنفيذ</h3><p>احصل على نتيجة جاهزة خلال دقائق بدل ساعات من التعديل.</p></div>
+      </div>
+    </div>
+
+    <div class="card" id="pricing">
+      <div class="section-title">💎 الأسعار</div>
+      <div class="plans">
+        <div class="plan">
+          <h3>Starter</h3>
+          <p>للتجربة والبداية</p>
+          <strong class="gold">99 جنيه / شهر</strong>
+          <p>200 Credits + أدوات أساسية</p>
+          <button class="btn">ابدأ الآن</button>
+        </div>
+        <div class="plan pop">
+          <h3>Pro</h3>
+          <p>أفضل قيمة لصناع المحتوى</p>
+          <strong class="gold">249 جنيه / شهر</strong>
+          <p>1000 Credits + فيديو AI + بدون Watermark</p>
+          <button class="btn primary" onclick="location.href='/login'">اشترك الآن</button>
+        </div>
+        <div class="plan">
+          <h3>Business</h3>
+          <p>للشركات والفرق</p>
+          <strong class="gold">599 جنيه / شهر</strong>
+          <p>5000 Credits + دعم أسرع</p>
+          <button class="btn">تواصل معنا</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>Powered by Supabase + Vercel + AI APIs</footer>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+    const SUPABASE_URL = 'PUT_YOUR_SUPABASE_URL_HERE';
+    const SUPABASE_ANON_KEY = 'PUT_YOUR_SUPABASE_ANON_KEY_HERE';
+
+    try {
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const { data } = await supabase.auth.getUser();
+      const target = data?.user ? '/dashboard' : '/login';
+      document.getElementById('loginBtn').onclick = () => location.href = target;
+      document.getElementById('startBtn').onclick = () => location.href = target;
+    } catch {
+      document.getElementById('loginBtn').onclick = () => location.href = '/login';
+      document.getElementById('startBtn').onclick = () => location.href = '/login';
+    }
+  </script>
 </body>
 </html>

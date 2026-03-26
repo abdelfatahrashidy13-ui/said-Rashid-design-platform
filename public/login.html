@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل الدخول - Said Rashid AI</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#0f0f12;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
+    .box{width:100%;max-width:420px;background:#18181d;border:1px solid #2f2f3a;border-radius:16px;padding:24px}
+    h1{margin:0 0 8px;font-size:26px}.gold{color:#f5c842}.muted{color:#aaa;font-size:14px;margin-bottom:18px}
+    input,button{width:100%;padding:12px;border-radius:10px;border:1px solid #2f2f3a;background:#202028;color:#fff;margin-top:10px;box-sizing:border-box}
+    input:focus{outline:none;border-color:#f5c842}
+    button{cursor:pointer;font-weight:700}
+    .primary{background:#f5c842;color:#000;border:none}
+    .secondary{background:#3b82f6;border:none}
+    .msg{margin-top:12px;padding:10px;border-radius:10px;font-size:14px;display:none}
+    .msg.show{display:block}.err{background:rgba(239,68,68,.1);color:#fca5a5}.ok{background:rgba(34,197,94,.1);color:#86efac}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Said Rashid <span class="gold">AI</span></h1>
+    <div class="muted">سجل دخولك أو أنشئ حساب جديد</div>
+
+    <input id="email" type="email" placeholder="البريد الإلكتروني" />
+    <input id="password" type="password" placeholder="كلمة المرور" />
+
+    <button class="primary" id="loginBtn">تسجيل الدخول</button>
+    <button class="secondary" id="signupBtn">إنشاء حساب</button>
+
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get("ref");
+    if (ref) localStorage.setItem("referral_code", ref);
+  </script>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const SUPABASE_URL = 'PUT_YOUR_SUPABASE_URL_HERE';
+    const SUPABASE_ANON_KEY = 'PUT_YOUR_SUPABASE_ANON_KEY_HERE';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const msg = document.getElementById('msg');
+    const emailEl = document.getElementById('email');
+    const passwordEl = document.getElementById('password');
+
+    function showMsg(text, ok = false) {
+      msg.className = 'msg show ' + (ok ? 'ok' : 'err');
+      msg.textContent = text;
+    }
+
+    async function signIn() {
+      const email = emailEl.value.trim();
+      const password = passwordEl.value.trim();
+      if (!email || !password) return showMsg('املأ كل الحقول');
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) return showMsg(error.message);
+      window.location.href = '/dashboard';
+    }
+
+    async function signUp() {
+      const email = emailEl.value.trim();
+      const password = passwordEl.value.trim();
+      if (!email || !password) return showMsg('املأ كل الحقول');
+
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) return showMsg(error.message);
+
+      const referralCode = localStorage.getItem("referral_code");
+      if (referralCode && data?.user) {
+        await supabase.from("profiles").update({ referred_by: referralCode }).eq("id", data.user.id);
+      }
+
+      showMsg('تم إنشاء الحساب. افحص البريد لو التفعيل مطلوب.', true);
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', signIn);
+    document.getElementById('signupBtn').addEventListener('click', signUp);
+
+    const { data: current } = await supabase.auth.getUser();
+    if (current?.user) window.location.href = '/dashboard';
+  </script>
+</body>
+</html>
