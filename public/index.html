@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Said Rashid Design Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0a;--bg2:#111;--card:#1a1a1a;--card2:#222;--border:#2a2a2a;--gold:#f5c842;--blue:#3b82f6;--purple:#8b5cf6;--green:#22c55e;--red:#ef4444;--txt:#fff;--txt2:#888;--muted:#555;--grad:linear-gradient(135deg,#f5c842,#e8a020);--glow:0 0 30px rgba(245,200,66,.2)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Cairo,sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden}
+.sb{position:fixed;right:0;top:0;width:58px;height:100vh;background:#0d0d0d;border-left:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:2px;z-index:200}
+.sb-logo{width:36px;height:36px;background:var(--grad);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#000;margin-bottom:8px;cursor:pointer}
+.sb-av{width:32px;height:32px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#000;margin-bottom:6px;cursor:pointer}
+.sb-ic{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all .2s;color:var(--txt2)}
+.sb-ic:hover,.sb-ic.on{background:var(--card);color:var(--gold)}
+.sb-bot{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:2px}
+.sb-div{width:28px;height:1px;background:var(--border);margin:5px 0}
+.main{margin-right:58px}
+.hdr{position:sticky;top:0;z-index:100;height:56px;display:flex;align-items:center;gap:12px;padding:0 18px;background:rgba(10,10,10,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.hdr-brand{font-size:14px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.dot{width:7px;height:7px;background:var(--gold);border-radius:50%}
+.hdr-search{flex:1;max-width:280px;position:relative}
+.hdr-search input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:7px 12px 7px 32px;color:var(--txt);font-family:Cairo,sans-serif;font-size:12px;outline:none}
+.hdr-search input:focus{border-color:var(--gold)}
+.hdr-search input::placeholder{color:var(--muted)}
+.si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:11px}
+.hdr-r{display:flex;gap:8px;align-items:center;margin-right:auto}
+.btn-free{background:var(--grad);color:#000;border:none;border-radius:8px;padding:7px 14px;font-family:Cairo,sans-serif;font-weight:800;font-size:11px;cursor:pointer}
+.btn-login{background:transparent;color:var(--txt2);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-family:Cairo,sans-serif;font-size:11px;cursor:pointer}
+.content{padding:18px 18px 100px}
+.page{display:none}.page.on{display:block}
+
+.hero{text-align:center;padding:40px 16px 30px}
+.lnav{display:flex;gap:16px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
+.lnav a{color:var(--txt2);font-size:12px;font-weight:600;cursor:pointer}
+.lnav a:hover{color:var(--gold)}
+.hero h1{font-size:clamp(22px,5vw,48px);font-weight:900;line-height:1.1;margin-bottom:10px}
+.gold{color:var(--gold)}
+.hero-sub{color:var(--txt2);font-size:13px;margin-bottom:20px}
+.btn-hero{background:var(--grad);color:#000;border:none;border-radius:11px;padding:12px 26px;font-family:Cairo,sans-serif;font-weight:800;font-size:13px;cursor:pointer;box-shadow:var(--glow)}
+.hero-demo{max-width:480px;margin:24px auto 0;background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.dtabs{display:flex;border-bottom:1px solid var(--border)}
+.dtab{flex:1;padding:9px 4px;font-size:10px;font-weight:600;cursor:pointer;color:var(--txt2);text-align:center;border-bottom:2px solid transparent}
+.dtab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.dcontent{padding:16px;height:140px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+.dvis{font-size:56px}
+.dlbl{font-size:10px;color:var(--txt2)}
+.trust{display:flex;gap:20px;justify-content:center;margin-top:20px;opacity:.4;flex-wrap:wrap}
+.trust span{font-size:11px;font-weight:700}
+
+.sec-ttl{font-size:16px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.sec-ttl::before{content:"";width:3px;height:16px;background:var(--grad);border-radius:3px;display:inline-block}
+.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.rh-t{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.rh-t::before{content:"";width:3px;height:13px;background:var(--grad);border-radius:3px}
+.rh-m{color:var(--gold);font-size:10px;font-weight:600;cursor:pointer}
+.hsc{display:flex;gap:9px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;margin-bottom:20px}
+.hsc::-webkit-scrollbar{display:none}
+.gc{min-width:135px;background:var(--card);border:1px solid var(--border);border-radius:11px;overflow:hidden;cursor:pointer;transition:all .2s;flex-shrink:0}
+.gc:hover{transform:translateY(-2px);border-color:var(--gold)}
+.gc-t{height:68px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.gc-i{padding:7px 9px;font-size:10px;font-weight:600;line-height:1.4}
+
+.dz-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px}
+.dz-card{background:var(--card);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;padding:12px}
+.dz-card:hover{transform:translateY(-3px);border-color:rgba(245,200,66,.3);box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.dc-top{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.dc-ic{font-size:13px}
+.dc-nm{font-size:11px;font-weight:700}
+.dz-prev{width:100%;height:96px;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative}
+.ba{display:flex;gap:3px;width:100%;height:100%}
+.ba-s{flex:1;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:26px;position:relative}
+.ba-l{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.7);color:#fff;font-size:7px;padding:1px 4px;border-radius:3px;font-weight:700}
+.ov-txt{position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,.75);color:#fff;font-size:8px;padding:3px 6px;border-radius:5px;line-height:1.4;font-weight:600;max-width:100px}
+.pm-tag{position:absolute;top:8px;right:8px;background:var(--grad);color:#000;font-size:7px;font-weight:800;padding:2px 5px;border-radius:4px}
+.new-tag{position:absolute;top:8px;right:8px;background:rgba(34,197,94,.15);border:1px solid var(--green);color:var(--green);font-size:7px;font-weight:800;padding:2px 5px;border-radius:4px}
+
+.dz-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
+.dz-c3{background:var(--card);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.dz-c3:hover{transform:translateY(-2px);border-color:rgba(245,200,66,.2)}
+.c3h{display:flex;align-items:center;gap:4px;padding:7px 7px 0}
+.c3h .ic{font-size:11px}
+.c3h .nm{font-size:9px;font-weight:700;line-height:1.3}
+.c3v{height:62px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:6px;border-radius:7px}
+.c3b{display:flex;gap:2px;height:56px;margin:6px}
+.c3b .s{flex:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:18px;position:relative}
+.c3b .lb{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.7);color:#fff;font-size:6px;padding:1px 3px;border-radius:2px;font-weight:700}
+
+.at-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:14px}
+.at{padding:9px 14px;font-size:11px;font-weight:600;cursor:pointer;color:var(--txt2);border-bottom:2px solid transparent}
+.at.on{color:var(--gold);border-bottom-color:var(--gold)}
+.af-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.af{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;display:flex;align-items:center;gap:8px}
+.af:hover{border-color:var(--gold)}
+.as-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.as-i{aspect-ratio:1;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer}
+.as-i:hover{transform:scale(1.05)}
+
+.prof-wrap{max-width:480px;margin:0 auto;padding:12px 0}
+.prof-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px}
+.prof-av{width:70px;height:70px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#000;flex-shrink:0;border:3px solid var(--border)}
+.pf{flex:1;display:flex;flex-direction:column;gap:8px}
+.pfl{font-size:9px;color:var(--txt2);margin-bottom:2px;text-transform:uppercase;letter-spacing:.5px}
+.pfi{width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--txt);font-family:Cairo,sans-serif;font-size:11px;outline:none}
+.pfi:focus{border-color:var(--gold)}
+.pf-hint{font-size:9px;color:var(--muted);margin-top:2px}
+.plan-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:15px;margin-bottom:14px}
+.pbt{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pnm{font-size:15px;font-weight:800}
+.btn-upg{background:var(--grad);color:#000;border:none;border-radius:7px;padding:6px 13px;font-family:Cairo,sans-serif;font-weight:800;font-size:10px;cursor:pointer}
+.plan-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)}
+.plan-row:last-of-type{border-bottom:none}
+.prl{font-size:10px;color:var(--txt2)}
+.prv{font-size:10px;font-weight:700}
+.pbar{width:100%;background:var(--card2);border-radius:4px;height:4px;overflow:hidden;margin-top:6px}
+.pbar-f{height:100%;background:var(--grad);border-radius:4px}
+.btn-trial{width:100%;background:var(--grad);color:#000;border:none;border-radius:8px;padding:9px;font-family:Cairo,sans-serif;font-weight:800;font-size:11px;cursor:pointer;margin-top:10px}
+.prof-btns{display:flex;justify-content:space-between;align-items:center;padding-top:7px}
+.btn-save{background:var(--grad);color:#000;border:none;border-radius:8px;padding:9px 20px;font-family:Cairo,sans-serif;font-weight:800;font-size:11px;cursor:pointer}
+.btn-del{background:transparent;color:var(--red);border:none;font-family:Cairo,sans-serif;font-size:10px;cursor:pointer;text-decoration:underline}
+
+.plans-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:11px;max-width:720px}
+.pc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;position:relative;transition:all .3s}
+.pc:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.pc.pop{border-color:var(--gold);box-shadow:var(--glow)}
+.pop-t{position:absolute;top:12px;left:12px;background:var(--grad);color:#000;font-size:7px;font-weight:800;padding:2px 7px;border-radius:12px}
+.pc .pi{font-size:24px;margin-bottom:8px}
+.pc .pn{font-size:14px;font-weight:800;margin-bottom:3px}
+.pc .pd{font-size:9px;color:var(--txt2);margin-bottom:12px;line-height:1.5}
+.pc .pp .am{font-size:28px;font-weight:900;color:var(--gold)}
+.pc .pp .cu{font-size:10px;color:var(--txt2)}
+.pc .pp .pe{font-size:9px;color:var(--muted)}
+.pc .pp{margin-bottom:12px}
+.pc ul{list-style:none;margin-bottom:14px;display:flex;flex-direction:column;gap:5px}
+.pc ul li{display:flex;align-items:center;gap:6px;font-size:9px;color:var(--txt2)}
+.pc ul li::before{content:"✓";width:15px;height:15px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:var(--green);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;flex-shrink:0}
+.pc ul li.no::before{content:"✗";background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--red)}
+.pc .pb{width:100%;border:none;border-radius:8px;padding:9px;font-family:Cairo,sans-serif;font-weight:800;font-size:11px;cursor:pointer;transition:all .2s}
+.pbg{background:var(--grad);color:#000}.pbg:hover{box-shadow:var(--glow)}
+.pbo{background:transparent;color:var(--txt);border:1px solid var(--border)}.pbo:hover{border-color:var(--gold);color:var(--gold)}
+
+.pay-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:620px}
+.pay-c{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px}
+.pay-c.voda{border-color:rgba(239,68,68,.2)}
+.pay-c.insta{border-color:rgba(59,130,246,.2)}
+.ph{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.plogo{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.pvl{background:linear-gradient(135deg,#ef4444,#dc2626)}
+.pil{background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
+.ptitle{font-size:12px;font-weight:800}
+.psub{font-size:9px;color:var(--txt2)}
+.nb{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;margin-bottom:9px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.nl{font-size:8px;color:var(--txt2);margin-bottom:2px}
+.nv{font-size:12px;font-weight:800;direction:ltr;text-align:left}
+.cpb{background:var(--border);border:none;border-radius:6px;padding:5px 9px;color:var(--txt2);font-family:Cairo,sans-serif;font-size:9px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.cpb:hover{background:var(--gold);color:#000}
+.qr-box{background:#fff;border-radius:10px;padding:12px;margin:8px 0;text-align:center}
+.qr-box .qr-ic{font-size:40px;display:block;margin-bottom:4px}
+.qr-box .qr-id{font-size:10px;color:#333;font-weight:700}
+.stps h5{font-size:8px;font-weight:700;color:var(--txt2);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.step{display:flex;gap:6px;margin-bottom:5px}
+.sn{width:16px;height:16px;border-radius:4px;background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.2);color:var(--gold);font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step p{font-size:9px;color:var(--txt2);line-height:1.5}
+.notice{max-width:620px;background:rgba(245,200,66,.04);border:1px solid rgba(245,200,66,.12);border-radius:9px;padding:11px 13px;display:flex;gap:7px;margin-top:12px}
+.notice p{font-size:10px;color:var(--txt2);line-height:1.7}
+
+.stbar{position:fixed;bottom:0;left:58px;right:0;z-index:150;background:rgba(10,10,10,.98);border-top:1px solid var(--border);backdrop-filter:blur(20px)}
+.stbar-top{display:flex;align-items:center;gap:8px;padding:8px 14px}
+.tool-badge{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:5px 9px;font-size:10px;color:var(--txt2);white-space:nowrap;flex-shrink:0}
+.tool-badge b{color:var(--gold)}
+.st-inp{flex:1;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--txt);font-family:Cairo,sans-serif;font-size:12px;outline:none}
+.st-inp:focus{border-color:var(--gold)}
+.st-inp::placeholder{color:var(--muted)}
+.btn-enh{background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.2);color:var(--gold);border-radius:7px;padding:7px 10px;font-family:Cairo,sans-serif;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.btn-run{background:var(--grad);color:#000;border:none;border-radius:9px;padding:9px 16px;font-family:Cairo,sans-serif;font-weight:800;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0}
+.btn-run:disabled{opacity:.5;cursor:not-allowed}
+.stbar-body{display:none;padding:0 14px 11px;flex-direction:column;gap:8px}
+.stbar.exp .stbar-body{display:flex}
+.upz{background:var(--card);border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer}
+.upz p{font-size:10px;color:var(--txt2);margin-top:4px}
+.prevb{display:none;position:relative}
+.prevb img{width:100%;max-height:130px;object-fit:contain;border-radius:8px;background:var(--card2)}
+.prevb .rm{position:absolute;top:5px;left:5px;background:rgba(239,68,68,.85);border:none;border-radius:5px;width:21px;height:21px;color:#fff;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center}
+.prog{width:100%;background:var(--card2);border-radius:4px;height:4px;overflow:hidden;display:none}
+.prog.show{display:block}
+.prog-f{height:100%;background:var(--grad);width:0%;transition:width .4s}
+.stat-t{font-size:10px;color:var(--txt2);margin-top:4px;text-align:center;display:none}
+.stat-t.show{display:block}
+.err-t{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:7px;padding:8px 10px;color:#fca5a5;font-size:10px;display:none;margin-top:6px}
+.err-t.show{display:block}
+.res-box{display:none}
+.res-box.show{display:block;margin-top:8px}
+.res-img{width:100%;border-radius:9px;max-height:240px;object-fit:contain;background:var(--card2)}
+.res-vid{width:100%;border-radius:9px;max-height:240px}
+.res-acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.res-btn{display:inline-flex;align-items:center;gap:4px;background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--txt2);font-family:Cairo,sans-serif;font-size:10px;cursor:pointer;text-decoration:none}
+.res-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
+.ov.show{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;max-width:340px;width:100%;position:relative}
+.mc{position:absolute;top:9px;left:9px;background:var(--card2);border:none;border-radius:6px;width:26px;height:26px;color:var(--txt2);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modal h3{font-size:15px;font-weight:800;margin-bottom:5px;text-align:center}
+.msub-t{font-size:10px;color:var(--txt2);text-align:center;margin-bottom:13px;line-height:1.7}
+.mf{display:flex;flex-direction:column;gap:7px}
+.mi{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--txt);font-family:Cairo,sans-serif;font-size:11px;outline:none}
+.mi:focus{border-color:var(--gold)}
+.mi::placeholder{color:var(--muted)}
+.mplan{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:9px 11px}
+.mpl{font-size:8px;color:var(--txt2);margin-bottom:2px}
+.mpv{font-size:12px;font-weight:800;color:var(--gold)}
+.msub-btn{background:var(--grad);color:#000;border:none;border-radius:8px;padding:10px;font-family:Cairo,sans-serif;font-weight:800;font-size:11px;cursor:pointer;margin-top:2px}
+
+footer{background:#0d0d0d;border-top:1px solid var(--border);padding:20px;text-align:center}
+.toast{position:fixed;bottom:76px;right:12px;background:var(--green);color:#000;padding:7px 13px;border-radius:8px;font-weight:700;font-size:10px;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:12px;height:12px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite}
+@media(max-width:560px){
+  .sb{width:46px}.main{margin-right:46px}.stbar{left:46px}
+  .hdr{padding:0 9px}.content{padding:12px 10px 95px}
+  .dz-grid{grid-template-columns:1fr}.dz-grid3{grid-template-columns:repeat(2,1fr)}
+  .as-grid{grid-template-columns:repeat(4,1fr)}.pay-g{grid-template-columns:1fr}.plans-g{grid-template-columns:1fr}
+  .btn-enh{display:none}
+}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<aside class="sb">
+  <div class="sb-logo">SR</div>
+  <div class="sb-av">S</div>
+  <div class="sb-ic on" data-page="home">🏠</div>
+  <div class="sb-ic" data-page="tools">🛠️</div>
+  <div class="sb-ic" data-page="assets">📁</div>
+  <div class="sb-ic" data-page="tutorials">📚</div>
+  <div class="sb-ic">☁️</div>
+  <div class="sb-ic" data-page="plans">🛒</div>
+  <div class="sb-ic">🔗</div>
+  <div class="sb-ic" data-page="plans">👑</div>
+  <div class="sb-div"></div>
+  <div class="sb-ic" data-page="profile">👤</div>
+  <div class="sb-bot">
+    <div class="sb-ic">🎁</div>
+    <div class="sb-ic" data-page="payment">💰</div>
+    <div class="sb-ic">⏻</div>
+  </div>
+</aside>
+
+<main class="main">
+<header class="hdr">
+  <div class="hdr-brand"><div class="dot"></div>Said Rashid AI</div>
+  <div class="hdr-search"><span class="si">🔍</span><input type="text" placeholder="ابحث..."></div>
+  <div class="hdr-r">
+    <button class="btn-login" data-page="profile">دخول</button>
+    <button class="btn-free" data-page="plans">ابدأ مجاناً</button>
+  </div>
+</header>
+
+<div class="content">
+
+<!-- HOME -->
+<div class="page on" id="page-home">
+  <div class="hero">
+    <div class="lnav">
+      <a data-page="tools">Tools</a>
+      <a data-page="tutorials">Resources</a>
+      <a data-page="plans">Pricing</a>
+      <a data-page="payment">Contact</a>
+    </div>
+    <h1>All-in-One Image &amp; <span class="gold">Video Studio</span></h1>
+    <p class="hero-sub">One Subscription for All AI Visual Tools</p>
+    <button class="btn-hero" data-page="tools">Start for FREE today</button>
+    <div class="hero-demo">
+      <div class="dtabs">
+        <div class="dtab on" data-demo="0">🎬 AI Video</div>
+        <div class="dtab" data-demo="1">🎤 Lip Sync</div>
+        <div class="dtab" data-demo="2">🎭 Character</div>
+        <div class="dtab" data-demo="3">🖼️ Editor</div>
+      </div>
+      <div class="dcontent" id="demoC">
+        <div class="dvis">🎬</div>
+        <div class="dlbl">AI Video — Veo 3 + Minimax</div>
+      </div>
+    </div>
+    <div class="trust">
+      <span>5,000,000+ Creators</span>
+      <span>Google</span>
+      <span>HubSpot</span>
+    </div>
+  </div>
+
+  <div class="rh"><div class="rh-t">🔥 أبرز الأدوات</div><span class="rh-m" data-page="tools">عرض الكل</span></div>
+  <div class="dz-grid3">
+    <div class="dz-c3" data-tool="text-to-image" data-name="Text-to-Image" data-img="0">
+      <div class="c3h"><span class="ic">✍️</span><span class="nm">Text-to-Image</span></div>
+      <div class="c3v" style="background:linear-gradient(135deg,#1a0800,#3d2000)">🍔</div>
+    </div>
+    <div class="dz-c3" data-tool="image-to-image" data-name="Image-to-Image" data-img="1">
+      <div class="c3h"><span class="ic">🔄</span><span class="nm">Image-to-Image</span></div>
+      <div class="c3b">
+        <div class="s" style="background:linear-gradient(135deg,#1a1a2e,#2d1b4e)">✏️<span class="lb">B</span></div>
+        <div class="s" style="background:linear-gradient(135deg,#2d1b4e,#4a2080)">🎨</div>
+      </div>
+    </div>
+    <div class="dz-c3" data-tool="face-swap" data-name="Face Swap" data-img="1">
+      <div class="c3h"><span class="ic">😊</span><span class="nm">Face Swap</span></div>
+      <div class="c3b">
+        <div class="s" style="background:linear-gradient(135deg,#1a0015,#2a0025)">👱‍♀️<span class="lb">B</span></div>
+        <div class="s" style="background:linear-gradient(135deg,#2a0025,#3d0035)">👩‍🦱</div>
+      </div>
+    </div>
+    <div class="dz-c3" data-tool="remove-background" data-name="AI Eraser" data-img="1">
+      <div class="c3h"><span class="ic">✂️</span><span class="nm">AI Eraser</span></div>
+      <div class="c3v" style="background:linear-gradient(135deg,#001a1a,#002525)">🐕</div>
+    </div>
+    <div class="dz-c3" data-tool="text-to-video" data-name="Text-to-Video" data-img="0">
+      <div class="c3h"><span class="ic">🎬</span><span class="nm">Text-to-Video</span></div>
+      <div class="c3v" style="background:linear-gradient(135deg,#0a1505,#1a3010)">🏎️</div>
+      <span class="pm-tag">Premium</span>
+    </div>
+    <div class="dz-c3" data-tool="veo3" data-name="Veo 3" data-img="0">
+      <div class="c3h"><span class="ic">🚀</span><span class="nm">Veo 3</span></div>
+      <div class="c3v" style="background:linear-gradient(135deg,#0a0515,#1a0a28)">🎬</div>
+      <span class="new-tag">New</span>
+    </div>
+  </div>
+
+  <div class="rh"><div class="rh-t">📚 دروس البداية</div><span class="rh-m" data-page="tutorials">عرض الكل</span></div>
+  <div class="hsc">
+    <div class="gc" data-tool="text-to-image" data-name="Beginner Guide" data-img="0"><div class="gc-t" style="background:linear-gradient(135deg,#1a1a2e,#2e2e4e)">📘</div><div class="gc-i">دليل البداية السريعة</div></div>
+    <div class="gc" data-tool="image-to-image" data-name="Consistent Character" data-img="1"><div class="gc-t" style="background:linear-gradient(135deg,#1a0a2e,#2d1b4e)">🎭</div><div class="gc-i">Consistent Character</div></div>
+    <div class="gc" data-tool="text-to-video" data-name="Text to Video" data-img="0"><div class="gc-t" style="background:linear-gradient(135deg,#0a1505,#152210)">🎬</div><div class="gc-i">Text to Video</div></div>
+    <div class="gc" data-tool="face-swap" data-name="Face Swap" data-img="1"><div class="gc-t" style="background:linear-gradient(135deg,#1a0015,#2a0025)">😊</div><div class="gc-i">Face Swap</div></div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div class="page" id="page-tools">
+  <div class="sec-ttl">AI Tools</div>
+  <div class="dz-grid">
+    <div class="dz-card" data-tool="text-to-image" data-name="Text-to-Image" data-img="0">
+      <div class="dc-top"><span class="dc-ic">✍️</span><span class="dc-nm">Text-to-Image</span></div>
+      <div class="dz-prev" style="background:linear-gradient(135deg,#1a0800,#3d2000);border-radius:8px;font-size:38px">🍔<div class="ov-txt">Delicious Fried Cheese...</div></div>
+    </div>
+    <div class="dz-card" data-tool="image-to-image" data-name="Image-to-Image" data-img="1">
+      <div class="dc-top"><span class="dc-ic">🔄</span><span class="dc-nm">Image-to-Image</span></div>
+      <div class="dz-prev"><div class="ba"><div class="ba-s" style="background:linear-gradient(135deg,#1a1a2e,#2d1b4e)">✏️<span class="ba-l">B</span></div><div class="ba-s" style="background:linear-gradient(135deg,#2d1b4e,#4a2080)">🎨<span class="ba-l">A</span></div></div></div>
+    </div>
+    <div class="dz-card" data-tool="chat-editor" data-name="Chat Editor" data-img="1">
+      <div class="dc-top"><span class="dc-ic">💬</span><span class="dc-nm">Chat Editor</span></div>
+      <div class="dz-prev" style="background:linear-gradient(135deg,#1a0a2e,#3d1060);border-radius:8px;font-size:38px">💄<div class="ov-txt">Add Sunglasses</div></div>
+    </div>
+    <div class="dz-card" data-tool="face-swap" data-name="Face Swap" data-img="1">
+      <div class="dc-top"><span class="dc-ic">😊</span><span class="dc-nm">Face Swap</span></div>
+      <div class="dz-prev"><div class="ba"><div class="ba-s" style="background:linear-gradient(135deg,#1a0015,#2a0025)">👱‍♀️<span class="ba-l">B</span></div><div class="ba-s" style="background:linear-gradient(135deg,#2a0025,#3d0035)">👩‍🦱<span class="ba-l">A</span></div></div></div>
+    </div>
+    <div class="dz-card" data-tool="text-to-video" data-name="Text-to-Video" data-img="0">
+      <div class="dc-top"><span class="dc-ic">🎬</span><span class="dc-nm">Text-to-Video</span></div>
+      <div class="dz-prev" style="background:linear-gradient(135deg,#0a1505,#1a3010);border-radius:8px;font-size:38px">🏎️<div class="ov-txt">A cool sports car...</div></div>
+      <span class="pm-tag">Premium</span>
+    </div>
+    <div class="dz-card" data-tool="image-to-video" data-name="Image-to-Video" data-img="1">
+      <div class="dc-top"><span class="dc-ic">📽️</span><span class="dc-nm">Image-to-Video</span></div>
+      <div class="dz-prev" style="background:linear-gradient(135deg,#000a1a,#001528);border-radius:8px;font-size:38px">🎸</div>
+      <span class="pm-tag">Premium</span>
+    </div>
+    <div class="dz-card" data-tool="remove-background" data-name="AI Eraser" data-img="1">
+      <div class="dc-top"><span class="dc-ic">✂️</span><span class="dc-nm">AI Eraser</span></div>
+      <div class="dz-prev" style="background:linear-gradient(135deg,#001a1a,#002525);border-radius:8px;font-size:38px">🐕</div>
+    </div>
+    <div class="dz-card" data-tool="enhance-photo" data-name="Enhance" data-img="1">
+      <div class="dc-top"><span class="dc-ic">⬆️</span><span class="dc-nm">Enhance</span></div>
+      <div class="dz-prev"><div class="ba"><div class="ba-s" style="background:linear-gradient(135deg,#0a1505,#152210);opacity:.5">🐸<span class="ba-l">B</span></div><div class="ba-s" style="background:linear-gradient(135deg,#152210,#253520)">🐸<span class="ba-l">A</span></div></div></div>
+    </div>
+    <div class="dz-card" data-tool="remove-background" data-name="Product Background" data-img="1">
+      <div class="dc-top"><span class="dc-ic">📦</span><span class="dc-nm">Product Background</span></div>
+      <div class="dz-prev" style="background:linear-gradient(135deg,#1a0800,#2d1200);border-radius:8px;font-size:38px">🧴</div>
+    </div>
+    <div class="dz-card" data-tool="upscale" data-name="Expand" data-img="1">
+      <div class="dc-top"><span class="dc-ic">↔️</span><span class="dc-nm">Expand</span></div>
+      <div class="dz-prev" style="background:linear-gradient(135deg,#0a0020,#150035);border-radius:8px;font-size:38px">🏔️</div>
+      <span class="pm-tag">Premium</span>
+    </div>
+    <div class="dz-card" data-tool="imagen3" data-name="Imagen 3" data-img="0">
+      <div class="dc-top"><span class="dc-ic">🖼️</span><span class="dc-nm">Imagen 3 — Google</span></div>
+      <div class="dz-prev" style="background:linear-gradient(135deg,#001a0a,#002a15);border-radius:8px;font-size:38px">🌟</div>
+      <span class="new-tag">New</span>
+    </div>
+    <div class="dz-card" data-tool="veo3" data-name="Veo 3" data-img="0">
+      <div class="dc-top"><span class="dc-ic">🚀</span><span class="dc-nm">Veo 3 — Google</span></div>
+      <div class="dz-prev" style="background:linear-gradient(135deg,#0a0515,#150a28);border-radius:8px;font-size:38px">🎬</div>
+      <span class="new-tag">New</span>
+    </div>
+    <div class="dz-card" data-tool="image-to-image" data-name="Virtual Try-on" data-img="1">
+      <div class="dc-top"><span class="dc-ic">👗</span><span class="dc-nm">Virtual Try-on</span></div>
+      <div class="dz-prev"><div class="ba"><div class="ba-s" style="background:linear-gradient(135deg,#1a0015,#2a0025)">👕</div><div class="ba-s" style="background:linear-gradient(135deg,#2a0025,#400035)">🧥</div></div></div>
+    </div>
+    <div class="dz-card" data-tool="image-to-image" data-name="Local Edit" data-img="1">
+      <div class="dc-top"><span class="dc-ic">✏️</span><span class="dc-nm">Local Edit</span></div>
+      <div class="dz-prev"><div class="ba"><div class="ba-s" style="background:linear-gradient(135deg,#1a1200,#2a2000)">🐕</div><div class="ba-s" style="background:linear-gradient(135deg,#1a2000,#2a3000)">🐕‍🦺</div></div></div>
+      <span class="pm-tag">Premium</span>
+    </div>
+  </div>
+</div>
+
+<!-- ASSETS -->
+<div class="page" id="page-assets">
+  <h2 style="font-size:17px;font-weight:800;margin-bottom:13px">Asset &amp; Result</h2>
+  <div class="at-tabs"><div class="at on">My Assets</div><div class="at">All Results</div></div>
+  <div class="af-grid">
+    <div class="af"><div style="font-size:17px">☁️</div><div><div style="font-size:11px;font-weight:700">Favorites</div><div style="font-size:9px;color:var(--txt2)">0 items</div></div></div>
+    <div class="af"><div style="font-size:17px">☁️</div><div><div style="font-size:11px;font-weight:700">Uploads</div><div style="font-size:9px;color:var(--txt2)">0 items</div></div></div>
+  </div>
+  <div class="as-grid">
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(0,35%,12%),hsl(50,45%,18%))">💍</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(29,35%,12%),hsl(79,45%,18%))">👜</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(58,35%,12%),hsl(108,45%,18%))">🛋️</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(87,35%,12%),hsl(137,45%,18%))">🚗</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(116,35%,12%),hsl(166,45%,18%))">💎</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(145,35%,12%),hsl(195,45%,18%))">🎒</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(174,35%,12%),hsl(224,45%,18%))">🏎️</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(203,35%,12%),hsl(253,45%,18%))">💻</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(232,35%,12%),hsl(282,45%,18%))">📦</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(261,35%,12%),hsl(311,45%,18%))">🧴</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(290,35%,12%),hsl(340,45%,18%))">👩</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(319,35%,12%),hsl(9,45%,18%))">🖼️</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(348,35%,12%),hsl(38,45%,18%))">🪙</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(17,35%,12%),hsl(67,45%,18%))">✨</div>
+    <div class="as-i" style="background:linear-gradient(135deg,hsl(46,35%,12%),hsl(96,45%,18%))">💃</div>
+  </div>
+</div>
+
+<!-- TUTORIALS -->
+<div class="page" id="page-tutorials">
+  <h2 style="font-size:17px;font-weight:800;margin-bottom:16px">دروس وشروحات</h2>
+  <div class="rh"><div class="rh-t">Get Started</div></div>
+  <div class="hsc">
+    <div class="gc" data-tool="text-to-image" data-name="Beginner Guide" data-img="0"><div class="gc-t" style="background:#1a1a1a">📘</div><div class="gc-i">Beginner Guide</div></div>
+  </div>
+  <div class="rh"><div class="rh-t">AI Video</div></div>
+  <div class="hsc">
+    <div class="gc" data-tool="text-to-video" data-name="Text to Video" data-img="0"><div class="gc-t" style="background:linear-gradient(135deg,#0a1505,#152210)">🎬</div><div class="gc-i">Text To Video</div></div>
+    <div class="gc" data-tool="image-to-video" data-name="Image to Video" data-img="1"><div class="gc-t" style="background:linear-gradient(135deg,#05150a,#102215)">📽️</div><div class="gc-i">Image To Video</div></div>
+    <div class="gc" data-tool="veo3" data-name="Veo 3" data-img="0"><div class="gc-t" style="background:linear-gradient(135deg,#0a0515,#1a0a28)">🚀</div><div class="gc-i">Veo 3 Google</div></div>
+  </div>
+  <div class="rh"><div class="rh-t">Face Kit</div></div>
+  <div class="hsc">
+    <div class="gc" data-tool="face-swap" data-name="Face Swap" data-img="1"><div class="gc-t" style="background:linear-gradient(135deg,#1a1500,#2a2200)">😊</div><div class="gc-i">Face Swap</div></div>
+    <div class="gc" data-tool="enhance-photo" data-name="Face Repair" data-img="1"><div class="gc-t" style="background:linear-gradient(135deg,#1a0015,#2a0025)">🔧</div><div class="gc-i">Face Repair</div></div>
+  </div>
+  <div class="rh"><div class="rh-t">Image Editors</div></div>
+  <div class="hsc">
+    <div class="gc" data-tool="remove-background" data-name="AI Eraser" data-img="1"><div class="gc-t" style="background:linear-gradient(135deg,#001a1a,#002a2a)">✂️</div><div class="gc-i">AI Eraser</div></div>
+    <div class="gc" data-tool="upscale" data-name="Expand" data-img="1"><div class="gc-t" style="background:linear-gradient(135deg,#1a0808,#2a1515)">↔️</div><div class="gc-i">Expand</div></div>
+    <div class="gc" data-tool="image-to-image" data-name="Local Edit" data-img="1"><div class="gc-t" style="background:linear-gradient(135deg,#001505,#002a10)">✏️</div><div class="gc-i">Local Edit</div></div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="page" id="page-profile">
+  <div class="prof-wrap">
+    <div class="prof-top">
+      <div class="prof-av">S</div>
+      <div class="pf">
+        <div><div class="pfl">Nickname</div><input class="pfi" type="text" value="said Rashidy"></div>
+        <div><div class="pfl">Username</div><input class="pfi" type="text" value="@user_linrrstk76"><div class="pf-hint">said-rashid.ai/@user_linrrstk76</div></div>
+        <div><div class="pfl">Email</div><input class="pfi" type="email" value="abdelfatahrashidy13@gmail.com"></div>
+      </div>
+    </div>
+    <div class="plan-box">
+      <div class="pbt"><div class="pnm">Free</div><button class="btn-upg" data-page="plans">Upgrade</button></div>
+      <div class="plan-row"><span class="prl">Regular Image Credits</span><span class="prv">32 / day</span></div>
+      <div class="plan-row"><span class="prl">Credits Balance</span><span class="prv" style="color:var(--gold)">50</span></div>
+      <div class="pbar"><div class="pbar-f" style="width:65%"></div></div>
+      <button class="btn-trial" data-page="plans">Start Your Free Trial</button>
+    </div>
+    <div class="prof-btns"><button class="btn-del">Delete Account</button><button class="btn-save">Save</button></div>
+  </div>
+</div>
+
+<!-- PLANS -->
+<div class="page" id="page-plans">
+  <div style="text-align:center;margin-bottom:22px">
+    <h2 style="font-size:clamp(17px,4vw,26px);font-weight:900;margin-bottom:6px">اختر باقتك</h2>
+    <p style="color:var(--txt2);font-size:11px">فعّل اشتراكك وابدأ التصميم فوراً</p>
+  </div>
+  <div class="plans-g">
+    <div class="pc">
+      <div class="pi">🌱</div><div class="pn">Starter</div><div class="pd">للمبتدئين</div>
+      <div class="pp"><span class="am">99</span><span class="cu"> جنيه</span><span class="pe"> / شهر</span></div>
+      <ul><li>50 صورة — Flux</li><li>10 فيديو</li><li>إزالة الخلفية</li><li class="no">Veo 3</li><li class="no">Face Swap</li></ul>
+      <button class="pb pbo" data-plan="Starter" data-price="99 جنيه">ابدأ الآن</button>
+    </div>
+    <div class="pc pop">
+      <div class="pop-t">الأكثر طلباً</div>
+      <div class="pi">🚀</div><div class="pn">Pro</div><div class="pd">للمحترفين</div>
+      <div class="pp"><span class="am">249</span><span class="cu"> جنيه</span><span class="pe"> / شهر</span></div>
+      <ul><li>500 صورة — Flux Pro</li><li>100 فيديو — Veo 3</li><li>Face Swap كامل</li><li>Chat Editor</li><li>دعم 24/7</li></ul>
+      <button class="pb pbg" data-plan="Pro" data-price="249 جنيه">اشترك الآن</button>
+    </div>
+    <div class="pc">
+      <div class="pi">🏢</div><div class="pn">Business</div><div class="pd">للشركات</div>
+      <div class="pp"><span class="am">599</span><span class="cu"> جنيه</span><span class="pe"> / شهر</span></div>
+      <ul><li>غير محدود</li><li>5 مستخدمين</li><li>API Access</li><li>مدير حساب</li><li>تقارير</li></ul>
+      <button class="pb pbo" data-plan="Business" data-price="599 جنيه">تواصل معنا</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT -->
+<div class="page" id="page-payment">
+  <div style="text-align:center;margin-bottom:20px">
+    <h2 style="font-size:clamp(16px,4vw,24px);font-weight:900;margin-bottom:5px">طرق الدفع</h2>
+    <p style="color:var(--txt2);font-size:11px">فودافون كاش أو InstaPay — تفعيل فوري</p>
+  </div>
+  <div class="pay-g">
+    <div class="pay-c voda">
+      <div class="ph"><div class="plogo pvl">📱</div><div><div class="ptitle">فودافون كاش</div><div class="psub">دفع فوري</div></div></div>
+      <div class="nb"><div><div class="nl">رقم الدفع</div><div class="nv" id="vn">00201122977222</div></div><button class="cpb" id="cpVoda">نسخ</button></div>
+      <div class="stps"><h5>الخطوات</h5>
+        <div class="step"><div class="sn">١</div><p>افتح فودافون كاش</p></div>
+        <div class="step"><div class="sn">٢</div><p>تحويل: 00201122977222</p></div>
+        <div class="step"><div class="sn">٣</div><p>ابعت الإيصال واتساب</p></div>
+      </div>
+    </div>
+    <div class="pay-c insta">
+      <div class="ph"><div class="plogo pil">⚡</div><div><div class="ptitle">InstaPay</div><div class="psub">تحويل بنكي</div></div></div>
+      <div class="nb"><div><div class="nl">معرف InstaPay</div><div class="nv" id="inid">abdelft@instapay</div></div><button class="cpb" id="cpInsta">نسخ</button></div>
+      <div class="qr-box">
+        <span class="qr-ic">📱</span>
+        <div class="qr-id">abdelft@instapay</div>
+      </div>
+      <div class="stps"><h5>الخطوات</h5>
+        <div class="step"><div class="sn">١</div><p>افتح InstaPay أو البنك</p></div>
+        <div class="step"><div class="sn">٢</div><p>أدخل: abdelft@instapay</p></div>
+        <div class="step"><div class="sn">٣</div><p>واتساب: 00201122977222</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="notice"><span>⚡</span><p>بعد الدفع أرسل الإيصال + اسمك + بريدك على واتساب <strong style="color:var(--gold)">00201122977222</strong></p></div>
+</div>
+
+</div>
+<footer>
+  <div style="font-size:13px;font-weight:800;margin-bottom:4px">Said Rashid <span style="color:var(--gold)">Design Platform</span></div>
+  <p style="color:var(--txt2);font-size:10px;margin-top:3px">Powered by fal.ai + Google Gemini and Veo 3</p>
+  <p style="color:var(--muted);font-size:9px;margin-top:3px">2025 Said Rashid | واتساب: <strong style="color:var(--gold)">00201122977222</strong></p>
+</footer>
+</main>
+
+<div class="stbar" id="stbar">
+  <div class="stbar-top">
+    <div class="tool-badge">الأداة: <b id="toolNm">اختر أداة</b></div>
+    <input class="st-inp" id="mainP" type="text" placeholder="اكتب وصف التصميم...">
+    <button class="btn-enh" id="btnEnh">✨ تحسين</button>
+    <button class="btn-run" id="runBtn">
+      <span id="runTxt">⚡ ولّد</span>
+      <div class="spin" id="runSpin" style="display:none"></div>
+    </button>
+  </div>
+  <div class="stbar-body" id="stbody">
+    <div class="upz" id="upz" style="display:none">
+      <div style="font-size:24px">📎</div>
+      <p>اضغط لرفع صورة</p>
+      <input type="file" id="fi" accept="image/*" style="display:none">
+    </div>
+    <div class="prevb" id="prevb"><img id="prevI" src="" alt=""><button class="rm" id="rmBtn">✕</button></div>
+    <div class="prog" id="prog"><div class="prog-f" id="progF"></div></div>
+    <div class="stat-t" id="statT"></div>
+    <div class="err-t" id="errT"></div>
+    <div class="res-box" id="resBox">
+      <img id="resImg" class="res-img" style="display:none" alt="">
+      <video id="resVid" class="res-vid" controls style="display:none"></video>
+      <div class="res-acts" id="resActs" style="display:none">
+        <a class="res-btn" id="dlBtn" download>⬇️ تحميل</a>
+        <button class="res-btn" id="useInBtn">🔄 استخدم كمدخل</button>
+        <button class="res-btn" id="resetBtn">🗑️ مسح</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="ov">
+  <div class="modal">
+    <button class="mc" id="mcBtn">✕</button>
+    <div style="font-size:34px;text-align:center;margin-bottom:8px">📋</div>
+    <h3>تأكيد الاشتراك</h3>
+    <p class="msub-t" id="msub">أرسل بياناتك وسيتم التفعيل فوراً</p>
+    <div class="mf">
+      <input class="mi" type="text" placeholder="الاسم الكامل" id="mN">
+      <input class="mi" type="email" placeholder="البريد الإلكتروني" id="mE">
+      <input class="mi" type="text" placeholder="رقم الهاتف" id="mP">
+      <div class="mplan"><div class="mpl">الباقة</div><div class="mpv" id="mPl"></div></div>
+      <button class="msub-btn" id="msubBtn">📤 إرسال على واتساب</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var curTool=null,needImg=false,imgB64=null,imgUrl=null,veo3Op=null,poll=null,pI=null,pr=0;
+var DEMOS=[
+  {ic:"🎬",bg:"linear-gradient(135deg,#0a1505,#152a08)",lbl:"AI Video — Veo 3 + Minimax"},
+  {ic:"🎤",bg:"linear-gradient(135deg,#1a0800,#2d1500)",lbl:"AI Lip Sync"},
+  {ic:"🎭",bg:"linear-gradient(135deg,#1a0a2e,#2d1b4e)",lbl:"AI Character"},
+  {ic:"🖼️",bg:"linear-gradient(135deg,#0a0a1a,#1a1a3a)",lbl:"Image Editor"}
+];
+
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("on");});
+  var pg=document.getElementById("page-"+id);
+  if(pg) pg.classList.add("on");
+  document.querySelectorAll(".sb-ic").forEach(function(i){i.classList.remove("on");});
+  document.querySelectorAll("[data-page='"+id+"']").forEach(function(el){
+    if(el.classList.contains("sb-ic")) el.classList.add("on");
+  });
+  window.scrollTo(0,0);
+}
+
+function selectTool(toolId,name,ni) {
+  curTool=toolId; needImg=ni;
+  document.getElementById("toolNm").textContent=name;
+  document.getElementById("stbar").classList.add("exp");
+  document.getElementById("stbody").style.display="flex";
+  document.getElementById("upz").style.display=ni?"block":"none";
+  if(!ni) document.getElementById("prevb").style.display="none";
+  resetR();
+  document.getElementById("mainP").focus();
+}
+
+document.addEventListener("click",function(e){
+  var el=e.target.closest("[data-page]");
+  if(el&&el.dataset.page){showPage(el.dataset.page);return;}
+  var tc=e.target.closest("[data-tool]");
+  if(tc){selectTool(tc.dataset.tool,tc.dataset.name,tc.dataset.img==="1");return;}
+  var pd=e.target.closest("[data-plan]");
+  if(pd){openModal(pd.dataset.plan,pd.dataset.price);return;}
+  var dm=e.target.closest("[data-demo]");
+  if(dm){
+    var i=parseInt(dm.dataset.demo);
+    document.querySelectorAll(".dtab").forEach(function(t){t.classList.remove("on");});
+    dm.classList.add("on");
+    var d=DEMOS[i];
+    document.getElementById("demoC").innerHTML="<div class='dvis' style='font-size:56px'>"+d.ic+"</div><div class='dlbl'>"+d.lbl+"</div>";
+    return;
+  }
+});
+
+document.getElementById("upz").addEventListener("click",function(){document.getElementById("fi").click();});
+document.getElementById("fi").addEventListener("change",function(){
+  var f=this.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    imgB64=ev.target.result.split(",")[1];
+    document.getElementById("prevI").src=ev.target.result;
+    document.getElementById("prevb").style.display="block";
+    document.getElementById("upz").style.display="none";
+  };
+  r.readAsDataURL(f);
+});
+document.getElementById("rmBtn").addEventListener("click",function(){
+  imgB64=null;imgUrl=null;
+  document.getElementById("prevb").style.display="none";
+  document.getElementById("upz").style.display="block";
+  document.getElementById("fi").value="";
+});
+document.getElementById("btnEnh").addEventListener("click",function(){
+  var p=document.getElementById("mainP").value.trim();
+  if(!p){toast("اكتب وصفاً أولاً");return;}
+  document.getElementById("mainP").value="جارٍ التحسين...";
+  fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tool:"enhance-prompt",prompt:p})})
+  .then(function(r){return r.json();})
+  .then(function(d){document.getElementById("mainP").value=d.enhanced||p;toast("تم تحسين الوصف!");})
+  .catch(function(){document.getElementById("mainP").value=p;});
+});
+document.getElementById("runBtn").addEventListener("click",runTool);
+document.getElementById("mainP").addEventListener("keypress",function(e){if(e.key==="Enter")runTool();});
+
+function runTool(){
+  if(!curTool){toast("اختر أداة أولاً");return;}
+  var prompt=document.getElementById("mainP").value.trim();
+  if(!prompt&&!imgB64){toast("اكتب وصفاً أولاً");return;}
+  resetR();setL(true);startP();
+  var body={tool:curTool,prompt:prompt};
+  if(imgB64) body.imageBase64=imgB64;
+  if(imgUrl) body.imageUrl=imgUrl;
+  fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(!d.success){showE(d.error||"حدث خطأ");setL(false);stopP();return;}
+    if(d.type==="veo3_pending"){veo3Op=d.operationName;setSt("Veo 3 جارٍ التوليد...");pVeo();return;}
+    if(d.status==="processing"||d.status==="starting"){setSt("جارٍ المعالجة...");pRep(d.id,d.modelId);return;}
+    if(d.status==="succeeded"||d.type==="base64"){stopP(100);showR(d);setL(false);}
+  })
+  .catch(function(e){showE(e.message);setL(false);stopP();});
+}
+
+function pRep(id,mid){
+  poll=setInterval(function(){
+    fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tool:"check-status",operationId:id,modelId:mid||curTool})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.status==="succeeded"){clearInterval(poll);stopP(100);showR({success:true,output:d.output});setL(false);}
+      else if(d.status==="failed"){clearInterval(poll);showE(d.error||"فشل");setL(false);stopP();}
+    }).catch(function(){});
+  },3000);
+}
+
+function pVeo(){
+  var t=0;
+  poll=setInterval(function(){
+    t++;
+    fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tool:"veo3-status",operationName:veo3Op})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.done){clearInterval(poll);stopP(100);if(d.data)showR(d);else showE(d.error||"فشل");setL(false);}
+    }).catch(function(){});
+    if(t>80){clearInterval(poll);showE("انتهى الوقت");setL(false);stopP();}
+  },5000);
+}
+
+function showR(d){
+  var box=document.getElementById("resBox"),img=document.getElementById("resImg"),vid=document.getElementById("resVid"),dl=document.getElementById("dlBtn"),acts=document.getElementById("resActs");
+  box.classList.add("show");
+  if(d.type==="base64"){
+    var mime=d.mimeType||"image/png",src="data:"+mime+";base64,"+d.data;
+    if(mime.indexOf("video")>-1){vid.src=src;vid.style.display="block";dl.href=src;dl.download="video.mp4";}
+    else{img.src=src;img.style.display="block";dl.href=src;dl.download="image.png";}
+    acts.style.display="flex";toast("تم التوليد!");return;
+  }
+  if(d.output){
+    var out=Array.isArray(d.output)?d.output[0]:d.output;
+    if(typeof out==="string"){
+      if(out.indexOf(".mp4")>-1||out.indexOf("video")>-1){vid.src=out;vid.style.display="block";dl.href=out;dl.download="video.mp4";}
+      else{img.src=out;img.style.display="block";dl.href=out;dl.download="image.png";imgUrl=out;}
+      acts.style.display="flex";toast("تم التوليد!");
+    }
+  }
+}
+
+document.getElementById("useInBtn").addEventListener("click",function(){
+  var img=document.getElementById("resImg");
+  if(img.src&&img.style.display!=="none"){
+    document.getElementById("prevI").src=img.src;
+    document.getElementById("prevb").style.display="block";
+    document.getElementById("upz").style.display="none";
+    var c=document.createElement("canvas");
+    c.width=img.naturalWidth;c.height=img.naturalHeight;
+    c.getContext("2d").drawImage(img,0,0);
+    imgB64=c.toDataURL().split(",")[1];
+    toast("تم استخدامها كمدخل");
+  }
+});
+document.getElementById("resetBtn").addEventListener("click",resetR);
+
+function startP(){pr=0;document.getElementById("prog").classList.add("show");pI=setInterval(function(){pr=Math.min(pr+1.2,85);document.getElementById("progF").style.width=pr+"%";},500);}
+function stopP(f){clearInterval(pI);document.getElementById("progF").style.width=(f||0)+"%";if(f===100)setTimeout(function(){document.getElementById("prog").classList.remove("show");},800);}
+function setSt(m){var e=document.getElementById("statT");e.textContent=m;e.classList.add("show");}
+function showE(m){var e=document.getElementById("errT");e.textContent=m;e.classList.add("show");stopP();}
+function resetR(){
+  if(poll){clearInterval(poll);poll=null;}
+  document.getElementById("resBox").classList.remove("show");
+  document.getElementById("resImg").style.display="none";
+  document.getElementById("resImg").src="";
+  document.getElementById("resVid").style.display="none";
+  document.getElementById("resVid").src="";
+  document.getElementById("resActs").style.display="none";
+  document.getElementById("errT").classList.remove("show");
+  document.getElementById("statT").classList.remove("show");
+  document.getElementById("prog").classList.remove("show");
+  document.getElementById("progF").style.width="0%";
+}
+function setL(v){
+  document.getElementById("runBtn").disabled=v;
+  document.getElementById("runTxt").style.display=v?"none":"inline";
+  document.getElementById("runSpin").style.display=v?"block":"none";
+}
+document.getElementById("cpVoda").addEventListener("click",function(){navigator.clipboard.writeText("00201122977222").then(function(){toast("تم النسخ!");});});
+document.getElementById("cpInsta").addEventListener("click",function(){navigator.clipboard.writeText("abdelft@instapay").then(function(){toast("تم النسخ!");});});
+function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show");},2500);}
+function openModal(plan,price){
+  document.getElementById("mPl").textContent="باقة "+plan+" — "+price+" / شهر";
+  document.getElementById("msub").textContent="بعد الدفع أرسل بياناتك وسيتم تفعيل باقة "+plan+" فوراً";
+  document.getElementById("ov").classList.add("show");
+}
+document.getElementById("mcBtn").addEventListener("click",function(){document.getElementById("ov").classList.remove("show");});
+document.getElementById("ov").addEventListener("click",function(e){if(e.target===this)document.getElementById("ov").classList.remove("show");});
+document.getElementById("msubBtn").addEventListener("click",function(){
+  var n=document.getElementById("mN").value.trim(),e=document.getElementById("mE").value.trim(),p=document.getElementById("mP").value.trim();
+  if(!n||!e||!p){toast("يرجى ملء جميع الحقول");return;}
+  var plan=document.getElementById("mPl").textContent;
+  var msg=encodeURIComponent("مرحباً أريد الاشتراك في Said Rashid Design Platform\n👤 "+n+"\n📧 "+e+"\n📱 "+p+"\n💎 "+plan);
+  window.open("https://wa.me/00201122977222?text="+msg,"_blank");
+  document.getElementById("ov").classList.remove("show");
+  toast("جاري فتح واتساب...");
+});
+var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.style.opacity="1";e.target.style.transform="translateY(0)";}});},{threshold:.1});
+document.querySelectorAll(".dz-card,.pc,.pay-c,.gc,.dz-c3").forEach(function(el){el.style.opacity="0";el.style.transform="translateY(12px)";el.style.transition="all .4s ease";obs.observe(el);});
+</script>
+</body>
+</html>
