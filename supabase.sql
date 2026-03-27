@@ -50,3 +50,10 @@ create policy "Users can view own generations" on generations for select using (
 
 drop policy if exists "Users can insert own generations" on generations;
 create policy "Users can insert own generations" on generations for insert with check (auth.uid() = user_id);
+
+
+drop policy if exists "Public can view generations" on generations;
+create policy "Public can view generations" on generations for select using (true);
+
+alter table profiles add column if not exists referral_credits_earned integer default 0;
+alter table profiles add column if not exists created_at timestamp with time zone default now();
