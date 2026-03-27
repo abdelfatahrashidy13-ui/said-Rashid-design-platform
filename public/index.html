@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Said Rashid Design Platform</title>
+<title>SAIDRASHIDY AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0a0a;--bg2:#111;--card:#1a1a1a;--card2:#222;--border:#2a2a2a;--gold:#f5c842;--blue:#3b82f6;--purple:#8b5cf6;--green:#22c55e;--red:#ef4444;--txt:#fff;--txt2:#888;--muted:#555;--grad:linear-gradient(135deg,#f5c842,#e8a020);--glow:0 0 30px rgba(245,200,66,.2)}
@@ -251,7 +251,7 @@ footer{background:#0d0d0d;border-top:1px solid var(--border);padding:20px;text-a
 
 <main class="main">
 <header class="hdr">
-  <div class="hdr-brand"><div class="dot"></div>Said Rashid AI</div>
+  <div class="hdr-brand"><div class="dot"></div>SAIDRASHIDY AI</div>
   <div class="hdr-search"><span class="si">🔍</span><input type="text" placeholder="ابحث..."></div>
   <div class="hdr-r">
     <button class="btn-login" data-page="profile">دخول</button>
@@ -545,7 +545,7 @@ footer{background:#0d0d0d;border-top:1px solid var(--border);padding:20px;text-a
 
 </div>
 <footer>
-  <div style="font-size:13px;font-weight:800;margin-bottom:4px">Said Rashid <span style="color:var(--gold)">Design Platform</span></div>
+  <div style="font-size:13px;font-weight:800;margin-bottom:4px">SAIDRASHIDY <span style="color:var(--gold)">AI</span></div>
   <p style="color:var(--txt2);font-size:10px;margin-top:3px">Powered by fal.ai + Google Gemini and Veo 3</p>
   <p style="color:var(--muted);font-size:9px;margin-top:3px">2025 Said Rashid | واتساب: <strong style="color:var(--gold)">00201122977222</strong></p>
 </footer>
@@ -791,7 +791,7 @@ document.getElementById("msubBtn").addEventListener("click",function(){
   var n=document.getElementById("mN").value.trim(),e=document.getElementById("mE").value.trim(),p=document.getElementById("mP").value.trim();
   if(!n||!e||!p){toast("يرجى ملء جميع الحقول");return;}
   var plan=document.getElementById("mPl").textContent;
-  var msg=encodeURIComponent("مرحباً أريد الاشتراك في Said Rashid Design Platform\n👤 "+n+"\n📧 "+e+"\n📱 "+p+"\n💎 "+plan);
+  var msg=encodeURIComponent("مرحباً أريد الاشتراك في SAIDRASHIDY AI\n👤 "+n+"\n📧 "+e+"\n📱 "+p+"\n💎 "+plan);
   window.open("https://wa.me/00201122977222?text="+msg,"_blank");
   document.getElementById("ov").classList.remove("show");
   toast("جاري فتح واتساب...");
@@ -799,5 +799,21 @@ document.getElementById("msubBtn").addEventListener("click",function(){
 var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.style.opacity="1";e.target.style.transform="translateY(0)";}});},{threshold:.1});
 document.querySelectorAll(".dz-card,.pc,.pay-c,.gc,.dz-c3").forEach(function(el){el.style.opacity="0";el.style.transform="translateY(12px)";el.style.transition="all .4s ease";obs.observe(el);});
 </script>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const SUPABASE_URL = window.SUPABASE_URL || 'PUT_YOUR_SUPABASE_URL_HERE';
+const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'PUT_YOUR_SUPABASE_ANON_KEY_HERE';
+try{
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const { data } = await supabase.auth.getUser();
+  const loginButtons = document.querySelectorAll('.btn-login,[data-page="profile"]');
+  loginButtons.forEach(btn => btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = data?.user ? '/dashboard' : '/login';
+  }));
+}catch(e){}
+</script>
+
 </body>
 </html>

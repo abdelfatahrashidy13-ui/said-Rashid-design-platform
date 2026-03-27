@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - SAIDRASHIDY AI</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#0f0f12;color:#fff;margin:0;padding:24px}
+    .wrap{max-width:1100px;margin:0 auto}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .card{background:#18181d;border:1px solid #2f2f3a;border-radius:16px;padding:18px}
+    .card h3{margin:0 0 10px;font-size:14px;color:#aaa}
+    .num{font-size:28px;font-weight:800;color:#f5c842}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:10px;border-bottom:1px solid #2f2f3a;text-align:right;font-size:13px}
+    input,button{padding:12px;border-radius:10px;border:1px solid #2f2f3a;background:#202028;color:#fff}
+    button{cursor:pointer;font-weight:700}
+    @media(max-width:900px){.grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:560px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>لوحة الإدارة - SAIDRASHIDY AI</h1>
+    <div class="card">
+      <input id="adminSecret" placeholder="أدخل ADMIN_SECRET" />
+      <button id="loadBtn">تحميل البيانات</button>
+    </div>
+
+    <div class="grid">
+      <div class="card"><h3>إجمالي المستخدمين</h3><div class="num" id="totalUsers">0</div></div>
+      <div class="card"><h3>المشتركين المدفوعين</h3><div class="num" id="paidUsers">0</div></div>
+      <div class="card"><h3>إجمالي Credits</h3><div class="num" id="totalCredits">0</div></div>
+      <div class="card"><h3>إجمالي الإحالات</h3><div class="num" id="totalReferrals">0</div></div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2>آخر المستخدمين</h2>
+      <table>
+        <thead><tr><th>الإيميل</th><th>الخطة</th><th>Credits</th><th>Referral</th></tr></thead>
+        <tbody id="usersTable"></tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2>آخر التوليدات</h2>
+      <table>
+        <thead><tr><th>Tool</th><th>Prompt</th><th>Result</th><th>وقت الإنشاء</th></tr></thead>
+        <tbody id="genTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loadBtn').addEventListener('click', async () => {
+      const secret = document.getElementById('adminSecret').value.trim();
+      const res = await fetch('/api/admin-stats', {
+        headers: { 'x-admin-secret': secret }
+      });
+      const data = await res.json();
+      if (data.error) { alert(data.error); return; }
+
+      document.getElementById('totalUsers').textContent = data.totalUsers || 0;
+      document.getElementById('paidUsers').textContent = data.paidUsers || 0;
+      document.getElementById('totalCredits').textContent = data.totalCredits || 0;
+      document.getElementById('totalReferrals').textContent = data.totalReferrals || 0;
+
+      document.getElementById('usersTable').innerHTML = (data.latestUsers || []).map(user => `
+        <tr>
+          <td>${user.email || '-'}</td>
+          <td>${user.plan || 'free'}</td>
+          <td>${user.credits || 0}</td>
+          <td>${user.referral_code || '-'}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('genTable').innerHTML = (data.latestGenerations || []).map(item => `
+        <tr>
+          <td>${item.tool || '-'}</td>
+          <td>${item.prompt || '-'}</td>
+          <td>${item.result_url ? `<a href="${item.result_url}" target="_blank" style="color:#f5c842">فتح</a>` : '-'}</td>
+          <td>${item.created_at || '-'}</td>
+        </tr>
+      `).join('');
+    });
+  </script>
+</body>
+</html>

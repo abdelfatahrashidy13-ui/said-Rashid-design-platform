@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explore - SAIDRASHIDY AI</title>
+<style>
+body{background:#0a0a0a;color:#fff;font-family:Arial,sans-serif;margin:0;padding:24px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:18px}
+.card{background:#1a1a1a;border:1px solid #2f2f3a;border-radius:14px;overflow:hidden}
+.card img{width:100%;aspect-ratio:1/1;object-fit:cover}
+.card p{font-size:12px;padding:10px;line-height:1.6}
+.actions{display:flex;justify-content:space-between;padding:10px;gap:8px}
+button{padding:10px;border:none;border-radius:10px;cursor:pointer;font-weight:700}
+.primary{background:#f5c842;color:#000}
+.blue{background:#3b82f6;color:#fff}
+</style>
+</head>
+<body>
+<div class="top">
+  <h2>🔥 Explore AI Creations</h2>
+  <div>
+    <button class="blue" onclick="location.href='/'">الرئيسية</button>
+    <button class="primary" onclick="location.href='/dashboard'">لوحة التحكم</button>
+  </div>
+</div>
+<div class="grid" id="gallery"></div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const supabase = createClient('PUT_YOUR_SUPABASE_URL_HERE','PUT_YOUR_SUPABASE_ANON_KEY_HERE');
+
+async function loadGallery() {
+  const { data } = await supabase
+    .from("generations")
+    .select("*")
+    .order("created_at", { ascending:false })
+    .limit(30);
+
+  const g = document.getElementById("gallery");
+  g.innerHTML = (data || []).map(item => `
+    <div class="card">
+      <img src="${item.result_url || item.image_url}">
+      <p>${item.prompt || ''}</p>
+      <div class="actions">
+        <button class="primary" onclick="remix(${JSON.stringify(item.prompt || '')})">Remix</button>
+        <button class="blue" onclick="shareItem(${JSON.stringify(item.result_url || item.image_url || '')})">Share</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.remix = function(prompt){
+  localStorage.setItem("remix_prompt", prompt);
+  window.location.href = "/dashboard";
+}
+
+window.shareItem = async function(url){
+  if (navigator.share) {
+    try{ await navigator.share({ title:"SAIDRASHIDY AI", url }); }catch(e){}
+  } else {
+    navigator.clipboard.writeText(url);
+    alert("تم نسخ الرابط");
+  }
+}
+
+loadGallery();
+</script>
+</body>
+</html>

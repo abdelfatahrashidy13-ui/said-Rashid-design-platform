@@ -1,3 +1,4 @@
+
 export const config = { runtime: 'edge' };
 
 const H = {
@@ -23,31 +24,39 @@ export default async function handler(req) {
   try { body = await req.json(); }
   catch (e) { return new Response(JSON.stringify({ error: 'Invalid JSON' }), { status: 400, headers: H }); }
 
-  const { tool, prompt, imageBase64, imageUrl, operationName } = body;
+  const { tool, prompt, operationName } = body;
 
   try {
-
     if (tool === 'test') {
       return new Response(JSON.stringify({ success: true, debug, message: 'API working!' }), { headers: H });
     }
 
     if (tool === 'enhance-prompt') {
-      if (!GEMINI) return new Response(JSON.stringify({ error: 'GEMINI_API_KEY missing' }), { headers: H });
+      if (!GEMINI) return new Response(JSON.stringify({ error: 'GEMINI_API_KEY missing' }), { status: 500, headers: H });
       const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: `Enhance this image generation prompt, return ONLY the enhanced prompt in English: "${prompt}"` }] }] })
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: `Enhance this image generation prompt, return ONLY the enhanced prompt in English: "${prompt}"`
+            }]
+          }]
+        })
       });
       const d = await r.json();
       return new Response(JSON.stringify({ success: true, enhanced: d.candidates?.[0]?.content?.parts?.[0]?.text || prompt }), { headers: H });
     }
 
     if (tool === 'imagen3') {
-      if (!GEMINI) return new Response(JSON.stringify({ error: 'GEMINI_API_KEY missing' }), { headers: H });
+      if (!GEMINI) return new Response(JSON.stringify({ error: 'GEMINI_API_KEY missing' }), { status: 500, headers: H });
       const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ instances: [{ prompt }], parameters: { sampleCount: 1, aspectRatio: body.ar || '1:1', personGeneration: 'allow_adult' } })
+        body: JSON.stringify({
+          instances: [{ prompt }],
+          parameters: { sampleCount: 1, aspectRatio: body.ar || '1:1', personGeneration: 'allow_adult' }
+        })
       });
       const d = await r.json();
       if (d.predictions?.[0]?.bytesBase64Encoded) {
@@ -57,7 +66,7 @@ export default async function handler(req) {
     }
 
     if (tool === 'veo3') {
-      if (!GEMINI) return new Response(JSON.stringify({ error: 'GEMINI_API_KEY missing' }), { headers: H });
+      if (!GEMINI) return new Response(JSON.stringify({ error: 'GEMINI_API_KEY missing' }), { status: 500, headers: H });
       const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-preview:predictLongRunning?key=${GEMINI}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -77,7 +86,6 @@ export default async function handler(req) {
       return new Response(JSON.stringify({ success: true, done: false }), { headers: H });
     }
 
-    // ── TOGETHER AI ──
     if (!TOGETHER) return new Response(JSON.stringify({ error: 'TOGETHER_API_KEY missing', debug }), { status: 500, headers: H });
 
     let finalPrompt = prompt || 'beautiful artistic image, high quality';
@@ -123,7 +131,6 @@ export default async function handler(req) {
     }
 
     return new Response(JSON.stringify({ error: 'No output', details: data, debug }), { status: 400, headers: H });
-
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message, debug }), { status: 500, headers: H });
   }
