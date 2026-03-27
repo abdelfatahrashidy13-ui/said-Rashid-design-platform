@@ -1,0 +1,10 @@
+المشروع جاهز تقريبًا.
+
+المتبقي فقط داخل Supabase:
+1) نفذ ملف supabase.sql
+2) Authentication -> Providers -> Google -> Enable
+3) في Google Cloud أضف Redirect URI:
+   https://fbojzeccftyzqttbnwtw.supabase.co/auth/v1/callback
+4) داخل Supabase Authentication -> URL Configuration:
+   - Site URL: رابط موقعك بعد النشر
+   - Redirect URL: https://your-domain.com/login?auth=callback
