@@ -545,7 +545,7 @@ footer{background:#0d0d0d;border-top:1px solid var(--border);padding:20px;text-a
 
 </div>
 <footer>
-  <div style="font-size:13px;font-weight:800;margin-bottom:4px">SAIDRASHIDY <span style="color:var(--gold)">AI</span></div>
+  <div style="font-size:13px;font-weight:800;margin-bottom:4px">Said Rashid <span style="color:var(--gold)">Design Platform</span></div>
   <p style="color:var(--txt2);font-size:10px;margin-top:3px">Powered by fal.ai + Google Gemini and Veo 3</p>
   <p style="color:var(--muted);font-size:9px;margin-top:3px">2025 Said Rashid | واتساب: <strong style="color:var(--gold)">00201122977222</strong></p>
 </footer>
@@ -802,18 +802,16 @@ document.querySelectorAll(".dz-card,.pc,.pay-c,.gc,.dz-c3").forEach(function(el)
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-const SUPABASE_URL = window.SUPABASE_URL || 'PUT_YOUR_SUPABASE_URL_HERE';
-const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'PUT_YOUR_SUPABASE_ANON_KEY_HERE';
-try{
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const { data } = await supabase.auth.getUser();
-  const loginButtons = document.querySelectorAll('.btn-login,[data-page="profile"]');
-  loginButtons.forEach(btn => btn.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.location.href = data?.user ? '/dashboard' : '/login';
-  }));
-}catch(e){}
+const SUPABASE_URL = 'PUT_YOUR_SUPABASE_URL_HERE';
+const SUPABASE_ANON_KEY = 'PUT_YOUR_SUPABASE_ANON_KEY_HERE';
+try {
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const { data } = await supabaseClient.auth.getUser();
+  const goAuth = () => { window.location.href = data?.user ? '/dashboard' : '/login'; };
+  document.querySelectorAll('.btn-login,[data-page="profile"]').forEach(el => {
+    el.addEventListener('click', (e) => { e.preventDefault(); goAuth(); });
+  });
+} catch (e) {}
 </script>
-
 </body>
 </html>

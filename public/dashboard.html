@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -18,14 +17,14 @@
     .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
     .metric{background:#202028;border:1px solid #2f2f3a;border-radius:12px;padding:14px}
     .out{background:#202028;border:1px solid #2f2f3a;border-radius:12px;padding:12px;margin-top:12px;word-break:break-word}
+    .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+    .gallery img,.gallery video{width:100%;border-radius:12px;background:#202028}
     .template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
     .template-card{background:#202028;border:1px solid #2f2f3a;border-radius:14px;padding:14px;cursor:pointer}
     .template-card:hover{border-color:#f5c842}
-    .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-    .gallery img{width:100%;border-radius:12px}
-    .upgrade-popup{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:999}
-    .upgrade-popup.show{display:flex}
-    .upgrade-box{background:#111;border:1px solid #333;border-radius:16px;padding:24px;max-width:320px;text-align:center}
+    .popup{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:999}
+    .popup.show{display:flex}
+    .popup-box{background:#111;border:1px solid #333;border-radius:16px;padding:24px;max-width:340px;text-align:center}
     @media(max-width:900px){.grid,.template-grid{grid-template-columns:1fr 1fr}}
     @media(max-width:560px){.grid,.template-grid{grid-template-columns:1fr}}
   </style>
@@ -43,12 +42,12 @@
       <div class="row" style="margin-top:12px">
         <button class="danger" id="logoutBtn">تسجيل الخروج</button>
         <button class="blue" onclick="location.href='/explore'">Explore</button>
-        <button class="primary" onclick="location.href='/admin'">Admin</button>
+        <button class="primary" onclick="location.href='/'">العودة للرئيسية</button>
       </div>
     </div>
 
     <div class="card">
-      <h2>🎬 TikTok / Ads Templates</h2>
+      <h2>Templates</h2>
       <div class="template-grid" id="templateGrid"></div>
     </div>
 
@@ -58,14 +57,13 @@
       <div class="row" style="margin-top:10px">
         <button class="primary" id="enhanceBtn">تحسين البرومبت</button>
         <button class="primary" id="imageBtn">توليد صورة</button>
-        <button class="primary" id="veoBtn">Veo 3 فيديو</button>
+        <button class="primary" id="videoBtn">Image to Video</button>
       </div>
       <div class="out" id="output">لا يوجد ناتج بعد</div>
     </div>
 
     <div class="card">
-      <h2>🎁 نظام الدعوات</h2>
-      <p>احصل على 20 Credits لكل شخص يسجل من خلالك</p>
+      <h2>نظام الدعوات</h2>
       <input id="refLink" readonly>
       <div class="row" style="margin-top:10px">
         <button class="primary" id="copyRefBtn">نسخ رابط الدعوة</button>
@@ -73,150 +71,134 @@
     </div>
 
     <div class="card">
-      <h2>🖼️ آخر أعمالك</h2>
+      <h2>آخر أعمالك</h2>
       <div class="gallery" id="myGallery"></div>
     </div>
   </div>
 
-  <div id="veoPopup" class="upgrade-popup">
-    <div class="upgrade-box">
-      <h2>🚀 Veo 3 متاح في Pro</h2>
-      <p>فعّل باقة Pro للحصول على فيديوهات AI احترافية بدون علامة مائية.</p>
-      <button class="primary" onclick="window.location.href='/'">💎 شاهد الباقات</button>
-      <button style="margin-top:8px" onclick="closeVeo()">إغلاق</button>
+  <div id="upgradePopup" class="popup">
+    <div class="popup-box">
+      <h2>هذه الميزة مدفوعة</h2>
+      <p>اشترك في Pro للحصول على فيديوهات AI وميزات متقدمة.</p>
+      <button class="primary" onclick="location.href='/'">شاهد الباقات</button>
+      <button style="margin-top:8px" onclick="document.getElementById('upgradePopup').classList.remove('show')">إغلاق</button>
     </div>
   </div>
 
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
     const SUPABASE_URL = 'PUT_YOUR_SUPABASE_URL_HERE';
     const SUPABASE_ANON_KEY = 'PUT_YOUR_SUPABASE_ANON_KEY_HERE';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let currentUser = null;
-    let currentProfile = null;
-
-    const VIDEO_TEMPLATES = [
-      { name:"إعلان TikTok", prompt:"A viral TikTok style product ad, fast cuts, cinematic lighting, trendy social media aesthetic, bold product reveal, 9:16" },
-      { name:"إعلان عطر فاخر", prompt:"Luxury perfume commercial, black background, gold reflections, cinematic camera movement, premium ad style, elegant atmosphere, 16:9" },
-      { name:"Fashion Reel", prompt:"Fashion reel video, stylish model, modern editorial look, smooth motion, high-end commercial style, 9:16" },
-      { name:"Food Promo", prompt:"Delicious food commercial, dramatic close-ups, steam, cinematic restaurant lighting, mouth-watering product ad, 9:16" },
-      { name:"Car Ad", prompt:"Cinematic sports car ad, night city reflections, dramatic lighting, smooth tracking shots, premium commercial, 16:9" },
-      { name:"Hook Video", prompt:"Attention-grabbing social media hook video, bold motion, high contrast, cinematic intro, short-form content style, 9:16" }
+    let currentUser = null, currentProfile = null, latestImageUrl = null, poll = null;
+    const TEMPLATES = [
+      { name: "إعلان TikTok", prompt: "A viral TikTok style product ad, fast cuts, cinematic lighting, trendy social media aesthetic, bold product reveal, 9:16" },
+      { name: "إعلان عطر فاخر", prompt: "Luxury perfume commercial, black background, gold reflections, cinematic camera movement, premium ad style, elegant atmosphere, 16:9" },
+      { name: "Fashion Reel", prompt: "Fashion reel video, stylish model, modern editorial look, smooth motion, high-end commercial style, 9:16" }
     ];
 
-    window.closeVeo = function(){ document.getElementById("veoPopup").classList.remove("show"); }
-
-    function showVeo(){ document.getElementById("veoPopup").classList.add("show"); }
-
-    function renderTemplates(){
-      const grid = document.getElementById("templateGrid");
-      grid.innerHTML = VIDEO_TEMPLATES.map(t => `
-        <div class="template-card" data-prompt="${t.prompt}">
-          <h4>${t.name}</h4>
-          <p class="muted">${t.prompt.slice(0,90)}...</p>
-        </div>
-      `).join("");
-
-      grid.querySelectorAll(".template-card").forEach(card => {
-        card.addEventListener("click", () => {
-          document.getElementById("prompt").value = card.dataset.prompt;
-        });
-      });
+    function renderTemplates() {
+      const grid = document.getElementById('templateGrid');
+      grid.innerHTML = TEMPLATES.map(t => `<div class="template-card" data-prompt="${t.prompt}"><h4>${t.name}</h4><p class="muted">${t.prompt.slice(0, 90)}...</p></div>`).join('');
+      grid.querySelectorAll('.template-card').forEach(card => card.addEventListener('click', () => {
+        document.getElementById('prompt').value = card.dataset.prompt;
+      }));
+      const remixPrompt = localStorage.getItem('remix_prompt');
+      if (remixPrompt) {
+        document.getElementById('prompt').value = remixPrompt;
+        localStorage.removeItem('remix_prompt');
+      }
     }
 
-    async function loadSession(){
+    async function loadSession() {
       const { data } = await supabase.auth.getUser();
-      if (!data?.user) {
-        window.location.href = '/login';
-        return;
-      }
+      if (!data?.user) { window.location.href = '/login'; return; }
       currentUser = data.user;
       document.getElementById('email').textContent = currentUser.email;
-
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-      currentProfile = profile;
-      document.getElementById('plan').textContent = profile?.plan || 'free';
-      document.getElementById('credits').textContent = profile?.credits ?? 0;
-      document.getElementById('refCode').textContent = profile?.referral_code || '-';
+      currentProfile = profile || { plan: 'free', credits: 0 };
+      document.getElementById('plan').textContent = currentProfile.plan || 'free';
+      document.getElementById('credits').textContent = currentProfile.credits ?? 0;
+      document.getElementById('refCode').textContent = currentProfile.referral_code || '-';
+      document.getElementById('refLink').value = `${window.location.origin}/login?ref=${currentProfile.referral_code || ''}`;
 
-      const refLink = `${window.location.origin}/login?ref=${profile?.referral_code || ''}`;
-      document.getElementById('refLink').value = refLink;
-
-      const { data: generations } = await supabase.from('generations').select('*').eq('user_id', currentUser.id).order('created_at', { ascending:false }).limit(12);
+      const { data: generations } = await supabase.from('generations').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(12);
       const gallery = document.getElementById('myGallery');
-      gallery.innerHTML = (generations || []).map(item => `<img src="${item.result_url || item.image_url}" alt="">`).join('');
+      gallery.innerHTML = (generations || []).map(item => {
+        const url = item.result_url || item.image_url || '';
+        return (url.endsWith('.mp4') || url.includes('video')) ? `<video controls src="${url}"></video>` : `<img src="${url}" alt="">`;
+      }).join('');
     }
 
-    document.getElementById('copyRefBtn').addEventListener('click', async () => {
-      await navigator.clipboard.writeText(document.getElementById('refLink').value);
-      alert('تم نسخ رابط الدعوة 🔥');
-    });
+    async function deductCredit(amount) {
+      await supabase.from('profiles').update({ credits: Math.max((currentProfile.credits || 0) - amount, 0) }).eq('id', currentUser.id);
+    }
 
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
+    async function saveGeneration(tool, prompt, url) {
+      await supabase.from('generations').insert({ user_id: currentUser.id, tool, prompt, image_url: url, result_url: url });
+    }
+
+    document.getElementById('copyRefBtn').onclick = async () => {
+      await navigator.clipboard.writeText(document.getElementById('refLink').value);
+      alert('تم نسخ رابط الدعوة');
+    };
+
+    document.getElementById('logoutBtn').onclick = async () => {
       await supabase.auth.signOut();
       window.location.href = '/login';
-    });
+    };
 
-    document.getElementById('enhanceBtn').addEventListener('click', async () => {
+    document.getElementById('enhanceBtn').onclick = async () => {
       const prompt = document.getElementById('prompt').value.trim();
-      const r = await fetch('/api/ai', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ tool:'enhance-prompt', prompt })
-      });
+      const r = await fetch('/api/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tool: 'enhance-prompt', prompt }) });
       const d = await r.json();
       document.getElementById('output').textContent = d.enhanced || JSON.stringify(d, null, 2);
-    });
+    };
 
-    document.getElementById('imageBtn').addEventListener('click', async () => {
-      if ((currentProfile?.credits ?? 0) <= 0) {
-        alert('رصيدك خلص 💰');
-        return;
-      }
-
+    document.getElementById('imageBtn').onclick = async () => {
+      if ((currentProfile.credits || 0) <= 0) return alert('رصيدك خلص');
       const prompt = document.getElementById('prompt').value.trim();
-      const r = await fetch('/api/ai', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ tool:'imagen3', prompt })
-      });
+      const r = await fetch('/api/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tool: 'imagen3', prompt }) });
       const d = await r.json();
-
       document.getElementById('output').textContent = JSON.stringify(d, null, 2);
-
-      if (d.type === 'base64') {
-        const imageUrl = `data:${d.mimeType || 'image/png'};base64,${d.data}`;
-        await supabase.from('generations').insert({
-          user_id: currentUser.id,
-          prompt,
-          image_url: imageUrl,
-          result_url: imageUrl
-        });
-
-        await supabase.from('profiles').update({
-          credits: Math.max((currentProfile.credits || 0) - 1, 0)
-        }).eq('id', currentUser.id);
-
+      const url = d.output && Array.isArray(d.output) ? d.output[0] : null;
+      if (url) {
+        latestImageUrl = url;
+        await saveGeneration('imagen3', prompt, url);
+        await deductCredit(1);
         await loadSession();
       }
-    });
+    };
 
-    document.getElementById('veoBtn').addEventListener('click', async () => {
-      if ((currentProfile?.plan || 'free') === 'free') {
-        showVeo();
+    document.getElementById('videoBtn').onclick = async () => {
+      if ((currentProfile.plan || 'free') === 'free') {
+        document.getElementById('upgradePopup').classList.add('show');
         return;
       }
+      if (!latestImageUrl) return alert('ولّد صورة أولًا');
       const prompt = document.getElementById('prompt').value.trim();
-      const r = await fetch('/api/ai', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ tool:'veo3', prompt, aspectRatio:'9:16', durationSeconds:8 })
-      });
+      const r = await fetch('/api/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tool: 'image-to-video', prompt, imageUrl: latestImageUrl }) });
       const d = await r.json();
       document.getElementById('output').textContent = JSON.stringify(d, null, 2);
-    });
+      if (d.taskId) {
+        if (poll) clearInterval(poll);
+        poll = setInterval(async () => {
+          const s = await fetch('/api/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tool: 'video-status', taskId: d.taskId }) });
+          const sd = await s.json();
+          document.getElementById('output').textContent = JSON.stringify(sd, null, 2);
+          if (sd.success && sd.done) {
+            clearInterval(poll);
+            const videoUrl = sd.output?.[0] || null;
+            if (videoUrl) {
+              await saveGeneration('image-to-video', prompt, videoUrl);
+              await deductCredit(10);
+              await loadSession();
+            }
+          }
+        }, 5000);
+      }
+    };
 
     renderTemplates();
     await loadSession();

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -16,7 +15,6 @@
     .secondary{background:#3b82f6;border:none}
     .msg{margin-top:12px;padding:10px;border-radius:10px;font-size:14px;display:none}
     .msg.show{display:block}.err{background:rgba(239,68,68,.1);color:#fca5a5}.ok{background:rgba(34,197,94,.1);color:#86efac}
-    a{color:#f5c842}
   </style>
 </head>
 <body>
@@ -28,61 +26,42 @@
     <button class="primary" id="loginBtn">تسجيل الدخول</button>
     <button class="secondary" id="signupBtn">إنشاء حساب</button>
     <div id="msg" class="msg"></div>
-    <div style="margin-top:16px;text-align:center"><a href="/">العودة للرئيسية</a></div>
   </div>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const ref = urlParams.get("ref");
+    const ref = new URLSearchParams(window.location.search).get("ref");
     if (ref) localStorage.setItem("referral_code", ref);
   </script>
 
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
     const SUPABASE_URL = 'PUT_YOUR_SUPABASE_URL_HERE';
     const SUPABASE_ANON_KEY = 'PUT_YOUR_SUPABASE_ANON_KEY_HERE';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     const msg = document.getElementById('msg');
-    const emailEl = document.getElementById('email');
-    const passwordEl = document.getElementById('password');
+    function showMsg(text, ok=false){ msg.className='msg show ' + (ok?'ok':'err'); msg.textContent=text; }
 
-    function showMsg(text, ok = false) {
-      msg.className = 'msg show ' + (ok ? 'ok' : 'err');
-      msg.textContent = text;
-    }
-
-    async function signIn() {
-      const email = emailEl.value.trim();
-      const password = passwordEl.value.trim();
+    document.getElementById('loginBtn').onclick = async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
       if (!email || !password) return showMsg('املأ كل الحقول');
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) return showMsg(error.message);
       window.location.href = '/dashboard';
-    }
+    };
 
-    async function signUp() {
-      const email = emailEl.value.trim();
-      const password = passwordEl.value.trim();
+    document.getElementById('signupBtn').onclick = async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
       if (!email || !password) return showMsg('املأ كل الحقول');
-
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) return showMsg(error.message);
-
       const referralCode = localStorage.getItem("referral_code");
       if (referralCode && data?.user) {
         await supabase.from("profiles").update({ referred_by: referralCode }).eq("id", data.user.id);
       }
-
       showMsg('تم إنشاء الحساب. افحص البريد لو التفعيل مطلوب.', true);
-    }
-
-    document.getElementById('loginBtn').addEventListener('click', signIn);
-    document.getElementById('signupBtn').addEventListener('click', signUp);
-
-    const { data: current } = await supabase.auth.getUser();
-    if (current?.user) window.location.href = '/dashboard';
+    };
   </script>
 </body>
 </html>
