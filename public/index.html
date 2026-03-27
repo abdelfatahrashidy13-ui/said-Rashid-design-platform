@@ -800,12 +800,14 @@ var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isInte
 document.querySelectorAll(".dz-card,.pc,.pay-c,.gc,.dz-c3").forEach(function(el){el.style.opacity="0";el.style.transform="translateY(12px)";el.style.transition="all .4s ease";obs.observe(el);});
 </script>
 
+<script src="/config.js"></script>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-const SUPABASE_URL = 'PUT_YOUR_SUPABASE_URL_HERE';
-const SUPABASE_ANON_KEY = 'PUT_YOUR_SUPABASE_ANON_KEY_HERE';
 try {
-  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  if (!window.APP_CONFIG?.SUPABASE_URL || !window.APP_CONFIG?.SUPABASE_ANON_KEY || window.APP_CONFIG.SUPABASE_URL.includes('PUT_YOUR') || window.APP_CONFIG.SUPABASE_ANON_KEY.includes('PUT_YOUR')) {
+    throw new Error('Missing Supabase config in /public/config.js');
+  }
+  const supabaseClient = createClient(window.APP_CONFIG.SUPABASE_URL, window.APP_CONFIG.SUPABASE_ANON_KEY);
   const { data } = await supabaseClient.auth.getUser();
   const goAuth = () => { window.location.href = data?.user ? '/dashboard' : '/login'; };
   document.querySelectorAll('.btn-login,[data-page="profile"]').forEach(el => {

@@ -27,9 +27,11 @@ button{padding:10px;border:none;border-radius:10px;cursor:pointer;font-weight:70
 </div>
 <div class="grid" id="gallery"></div>
 
+<script src="/config.js"></script>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-const supabase = createClient('PUT_YOUR_SUPABASE_URL_HERE','PUT_YOUR_SUPABASE_ANON_KEY_HERE');
+const supabase = createClient(window.APP_CONFIG?.SUPABASE_URL, window.APP_CONFIG?.SUPABASE_ANON_KEY);
+if (!window.APP_CONFIG?.SUPABASE_URL || !window.APP_CONFIG?.SUPABASE_ANON_KEY || window.APP_CONFIG.SUPABASE_URL.includes('PUT_YOUR') || window.APP_CONFIG.SUPABASE_ANON_KEY.includes('PUT_YOUR')) { throw new Error('Missing Supabase config in /public/config.js'); }
 
 async function loadGallery() {
   const { data } = await supabase.from("generations").select("*").order("created_at", { ascending:false }).limit(30);
