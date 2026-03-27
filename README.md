@@ -1,25 +1,26 @@
+# SAIDRASHIDY AI - Startup Complete
 
-# SAIDRASHIDY AI Version 2
-
-## جاهز للنشر على Vercel
-1. ارفع الملفات على GitHub
-2. اربطها بـ Vercel
-3. أضف Environment Variables من ملف `.env.example`
-4. نفذ `supabase.sql` داخل Supabase SQL Editor
-5. في الملفات:
-   - public/login.html
-   - public/dashboard.html
-   - public/explore.html
-   استبدل:
-   - PUT_YOUR_SUPABASE_URL_HERE
-   - PUT_YOUR_SUPABASE_ANON_KEY_HERE
-
-## يحتوي على
-- الواجهة الأصلية المعدلة باسم SAIDRASHIDY AI
-- تسجيل دخول Supabase
+## ما بداخل المشروع
+- الواجهة الأصلية باسم SAIDRASHIDY AI
+- Supabase Auth
 - Dashboard
 - Explore
 - Admin
-- AI API
-- Referral Reward API
-- Paymob Init + Webhook placeholders
+- BytePlus Image Generation
+- BytePlus Image-to-Video task + status
+- Paymob init
+- Referral reward
+- Supabase SQL
+
+## التشغيل
+1. ارفع المشروع على GitHub
+2. اربطه بـ Vercel
+3. أضف Environment Variables من `.env.example`
+4. نفذ `supabase.sql` في Supabase SQL Editor
+5. استبدل في:
+   - public/login.html
+   - public/dashboard.html
+   - public/explore.html
+   القيم:
+   - PUT_YOUR_SUPABASE_URL_HERE
+   - PUT_YOUR_SUPABASE_ANON_KEY_HERE
